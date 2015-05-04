@@ -34,7 +34,6 @@ public abstract class AbstractUser {
      * @param theEmail the user's email address
      * @param thePhoneNumber the user's phone number
      * @param theAddress the user's home address
-     * @param theUserID the user's User ID
      * 
      */
     protected AbstractUser(final String theFirstName, final String theLastName, final String theEmail, final String thePhoneNumber, 
