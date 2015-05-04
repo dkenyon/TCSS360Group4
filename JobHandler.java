@@ -7,12 +7,16 @@ public class JobHandler {
 	
 	/** The list of jobs*/
 	private List<Job> jobList;
+        
+        /** The list of volunteers*/
+        private List<Volunteer> volunteerList;
 	
 	/**
 	 * Initializing the JobHandler
 	 */
 	public JobHandler(){
 		jobList = new ArrayList<Job>();
+                volunteerList = new ArrayList<Volunteer>();
 	}
 	
 	/**
@@ -65,4 +69,22 @@ public class JobHandler {
 		}
 		return returnList;
 	}
+        
+        /**
+         * Looks for volunteers by last name
+         * @param lastName
+         * @return a list of volunteers with the specified last name
+         */
+        public List<Volunteer> getVolunteerByLastName(String lastName) {
+            
+            // list of volunteers with required name
+            List<Volunteer> matches = new ArrayList<>();
+            
+            // iterating for readability's sake
+            for(Volunteer aVolunteer : volunteerList) {
+                if(aVolunteer.getLastName().equalsIgnoreCase(lastName))
+                    matches.add(aVolunteer);
+            }
+            return matches;
+        }
 }
