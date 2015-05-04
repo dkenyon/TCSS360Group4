@@ -6,10 +6,10 @@
  */
 public abstract class AbstractUser {   
     
-	/** A global counter set up so that each user has a unique integer ID given to him/her. */
-	private static int userIDCounter = 1;
+    /** A global counter set up so that each user has a unique integer ID given to him/her. */
+    private static int userIDCounter = 1;
 	
-	/** The User's first name. */
+    /** The User's first name. */
     private String myFirstName;
     
     /** The User's last name. */
