@@ -2,16 +2,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the Administrator subclasses.
+ * Represents the Administrator subclass.
  * 
  * @author Dennis Kenyon
- * @version 03May2015
+ * @version 06May2015
  */
 
 public class Administrator extends AbstractUser {
 
-	/** List of 'volunteers' (placeholder admins at the moment) to check cases with. */
-	private ArrayList<Administrator> myTestList;
+	/** List of volunteers to check cases with. */
+	private ArrayList<Volunteer> myTestList;
+	
+	/**Static reference to the JobHandler class*/
+	private static JobHandler myJobHandler;
 	
     /**
      * Initialize the instance fields.
@@ -20,12 +23,12 @@ public class Administrator extends AbstractUser {
      * @param theEmail the admin's email address
      * @param thePhoneNumber the admin's phone number
      * @param theAddress the admin's home address
-     * @param theUserID the admin's User ID
      * 
      */
     public Administrator(final String theFirstName, final String theLastName, final String theEmail, final String thePhoneNumber, 
-    		final String theAddress) {
+    		final String theAddress, final JobHandler theJobHandler) {
         super(theFirstName, theLastName, theEmail, thePhoneNumber, theAddress);
+        myJobHandler = theJobHandler;
     }
     
     /**
@@ -33,20 +36,7 @@ public class Administrator extends AbstractUser {
      * @param theLastName the last name of the user to search for
      * @return a list of volunteers with that last name
      */
-    // ****USING ADMINISTRATORS AS A PLACEHOLDER UNTIL OUR VOLUNTEER CLASS IS FINISHED****
-    public List<Administrator> searchVolunteers(final String theLastName) {
-    	List<Administrator> tempList = new ArrayList<Administrator>();
-    	//List<Administrator> volunteerList = myJobHandler.getVolunteerList();
-    	for (Administrator admin : myTestList) {
-    		if (admin.getLastName().equals(theLastName)) {
-    			tempList.add(admin);
-    		}
-    	}
-    	return tempList;
-    }    
-    
-    //STRICTLY FOR TESTING PURPOSES; DELETED LATER 
-    public void addToTestList(Administrator theAdmin) {
-    	myTestList.add(theAdmin);
+    public List<Volunteer> searchVolunteers(final String theLastName) {
+    	return myJobHandler.getVolunteerByLastName(theLastName);
     }
 }
