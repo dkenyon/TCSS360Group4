@@ -1,0 +1,4 @@
+John,Doe,johndoe@gmail.com,2534567890,Lacey Washington,
+Michael,Smith,michaelsmith@gmail.com,3604448888,Olympia Washington,
+George,Williams,georgewilliams@gmail.com,2537778888,Tacoma Washington,
+Jack,Johnson,jackjohnson@gmail.com,2531239876,Lakewood Washington,
