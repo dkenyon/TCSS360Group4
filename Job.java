@@ -1,6 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a job.
+ * 
+ * @author David Anderson
+ * @author Dennis Kenyon
+ * @version 09May2015
+ */
+
 public class Job {
 	
 	/** A global counter set up so that each job has a unique integer ID given to it. */
@@ -12,12 +20,12 @@ public class Job {
 	/**A unique ID number assigned to the Job*/
 	private int jobID;
 	
-	/**A two integer represenation of the date of the Job*/
+	/**A two integer representation of the date of the Job*/
 	private int jobMonth;
 	private int jobDate;
 	
 	/**Location of the Job*/
-	private int jobLocation;
+	private String jobLocation;
 	
 	/**Max light work volunteers*/
 	private int maxLight;
@@ -27,9 +35,9 @@ public class Job {
 	private int maxHeavy;
 	
 	/**List of volunteerIDs who have signed up for the Job*/
-	private List<Integer> lightVolunteers;
-	private List<Integer> mediumVolunteers;
-	private List<Integer> heavyVolunteers;
+	private List<Volunteer> lightVolunteers;
+	private List<Volunteer> mediumVolunteers;
+	private List<Volunteer> heavyVolunteers;
 	
 	/**Information about the Job*/
 	private String jobInfo;
@@ -45,7 +53,7 @@ public class Job {
 	 * @param theMaxHeavy the maximum number of heavy workers needed
 	 * @param theInfo the information about the job
 	 */
-	public Job( String theName,int theMonth,int theDate,int theLocation,int theMaxLight,int theMaxMed, int theMaxHeavy, String theInfo){
+	public Job( String theName, int theMonth, int theDate, String theLocation, int theMaxLight, int theMaxMed, int theMaxHeavy, String theInfo){
 		jobName = theName;
 		jobMonth = theMonth;
 		jobDate = theDate;
@@ -58,9 +66,9 @@ public class Job {
 		jobID = jobIDCounter;
 		jobIDCounter++;
 		
-		lightVolunteers = new ArrayList<Integer>();
-		mediumVolunteers = new ArrayList<Integer>();
-		heavyVolunteers = new ArrayList<Integer>();
+		lightVolunteers = new ArrayList<Volunteer>();
+		mediumVolunteers = new ArrayList<Volunteer>();
+		heavyVolunteers = new ArrayList<Volunteer>();
 	}
 	
 	/**
@@ -91,7 +99,7 @@ public class Job {
 	 * Returns the date when the job will take place 
 	 * @return the date (int 0-31)
 	 */
-	public int getDate(){
+	public int getDay(){
 		return jobDate;
 	}
 	
@@ -99,7 +107,7 @@ public class Job {
 	 * Returns the location of the job
 	 * @return the location
 	 */
-	public int getLocation(){
+	public String getLocation(){
 		return jobLocation;
 	}
 	
@@ -140,9 +148,9 @@ public class Job {
 	 * @param VolID the volunteersID
 	 * @return true if volunteer successfully added to job, false if volunteer is already signed up for job or if category is full
 	 */
-	public boolean signUpForLight(int VolID){
-		if(lightVolunteers.size()<maxLight && !this.containsVolunteer(VolID)){
-			lightVolunteers.add(VolID);
+	public boolean signUpForLight(Volunteer theVolunteer){
+		if(lightVolunteers.size()<maxLight && !this.containsVolunteer(theVolunteer)){
+			lightVolunteers.add(theVolunteer);
 			return true;
 		}
 		else{
@@ -155,9 +163,9 @@ public class Job {
 	 * @param VolID the volunteersID
 	 * @return true if volunteer successfully added to job, false if volunteer is already signed up for job or if category is full
 	 */
-	public boolean signUpForMedium(int VolID){
-		if(mediumVolunteers.size()<maxMed && !this.containsVolunteer(VolID)){
-			mediumVolunteers.add(VolID);
+	public boolean signUpForMedium(Volunteer theVolunteer){
+		if(mediumVolunteers.size()<maxMed && !this.containsVolunteer(theVolunteer)){
+			mediumVolunteers.add(theVolunteer);
 			return true;
 		}
 		else{
@@ -170,9 +178,9 @@ public class Job {
 	 * @param VolID the volunteersID
 	 * @return true if volunteer successfully added to job, false if volunteer is already signed up for job or if category is full
 	 */
-	public boolean signUpForHeavy(int VolID){
-		if(heavyVolunteers.size()<maxHeavy && !this.containsVolunteer(VolID)){
-			heavyVolunteers.add(VolID);
+	public boolean signUpForHeavy(Volunteer theVolunteer){
+		if(heavyVolunteers.size()<maxHeavy && !this.containsVolunteer(theVolunteer)){
+			heavyVolunteers.add(theVolunteer);
 			return true;
 		}
 		else{
@@ -185,8 +193,8 @@ public class Job {
 	 * @param VolID the volunteers ID
 	 * @return true if volunteer has already signed up for job, false otherwise
 	 */
-	public boolean containsVolunteer(int VolID){
-		if(lightVolunteers.contains(VolID) || mediumVolunteers.contains(VolID) || heavyVolunteers.contains(VolID)){
+	public boolean containsVolunteer(Volunteer theVolunteer){
+		if(lightVolunteers.contains(theVolunteer) || mediumVolunteers.contains(theVolunteer) || heavyVolunteers.contains(theVolunteer)){
 			return true;
 		}
 		else{
@@ -194,17 +202,17 @@ public class Job {
 		}
 	}
 	
-	public List<Integer> getVolunteers(){
-		List<Integer> volunteers = new ArrayList<Integer>();
+	public List<Volunteer> getVolunteers(){
+		List<Volunteer> volunteers = new ArrayList<Volunteer>();
 		
-		for(int index=0;index<lightVolunteers.size();index++){
-			volunteers.add(lightVolunteers.get(index));
+		for(Volunteer volunteer : lightVolunteers){
+			volunteers.add(volunteer);
 		}
-		for(int index=0;index<mediumVolunteers.size();index++){
-			volunteers.add(mediumVolunteers.get(index));
+		for(Volunteer volunteer : mediumVolunteers){
+			volunteers.add(volunteer);
 		}
-		for(int index=0;index<heavyVolunteers.size();index++){
-			volunteers.add(heavyVolunteers.get(index));
+		for(Volunteer volunteer : heavyVolunteers){
+			volunteers.add(volunteer);
 		}
 		
 		return volunteers;
