@@ -12,11 +12,11 @@ import java.util.List;
 
 public class ParkManager extends AbstractUser {
 	
-	/**List of parks managed by Park Manager. Stored as a unique integer ID number for each park*/
-	private List<Integer> myManagedParks;
+	/**List of parks managed by Park Manager. Stored as a String for each park name.*/
+	private List<String> myManagedParks;
 	
 	/**List of jobs managed by Park Manager. Stored as a unique integer ID number for each job*/
-	private List<Integer> myManagedJobs;
+	private List<Job> myManagedJobs;
 	
 	/**Static reference to the JobHandler class*/
 	private static JobHandler jobHandler;
@@ -32,13 +32,15 @@ public class ParkManager extends AbstractUser {
 	 */
 	public ParkManager(String theFirstName, String theLastName, String theEmail, String thePhonenumber, String theAddress,JobHandler jHandler){
 		super(theFirstName, theLastName,theEmail, thePhonenumber, theAddress);
+		myManagedParks = new ArrayList<String>();
+		myManagedJobs = new ArrayList<Job>();
 		jobHandler = jHandler;
 		
 	}
 	
 	/**
 	 * Adds a job to the list of jobs which may be signed up for
-	 * @param myNewJob the new nob
+	 * @param myNewJob the new job
 	 * @return true if job was posted successfully, false otherwise
 	 */
 	public boolean submitJob(Job myNewJob){
@@ -50,20 +52,32 @@ public class ParkManager extends AbstractUser {
 	 * @return list of upcoming jobs
 	 */
 	public List<Job> viewMyUpcomingJobs(){
-		List<Job> myUpcoming = new ArrayList<Job>();
-		for(int index=0;index<myManagedJobs.size();index++){
-			myUpcoming.add(jobHandler.getJobByID(myManagedJobs.get(index)));
-		}
-		return myUpcoming;
+		return myManagedJobs;
+	}
+//	
+//	/**
+//	 * Returns a list of volunteer ID numbers who have signed up for a given job
+//	 * @param jobID the job to seach into
+//	 * @return a list of volunteer ID numbers
+//	 */
+//	public List<Volunteer> viewVolunteers(Job theJob){
+//		return jobHandler.getJobByID(jobID).getVolunteers();
+//	}
+	
+	public void addJob(Job theJob) {
+		myManagedJobs.add(theJob);
 	}
 	
-	/**
-	 * Returns a list of volunteer ID numbers who have signed up for a given job
-	 * @param jobID the job to seach into
-	 * @return a list of volunteer ID numbers
-	 */
-	public List<Integer> viewVolunteers(int jobID){
-		return jobHandler.getJobByID(jobID).getVolunteers();
+	public void addPark(String thePark) {
+		myManagedParks.add(thePark);
+	}
+	
+	public List<String> getMyParks() {
+		return myManagedParks;
+	}
+	
+	public List<Job> getMyJobs() {
+		return myManagedJobs;
 	}
 
 }
