@@ -1,37 +1,50 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
+/**
+ * A quick and dirty console demo of the park management program.
+ * 
+ * @author Dennis Kenyon
+ * @author Brian Crabtree
+ * @author David Anderson
+ * @version 09May2015
+ */
 
 public class ConsoleDemo {
 	
 	public static void main(final String[] theArgs) throws FileNotFoundException {
 		
 		// initialize variables
+		
 		JobHandler jobHandler = new JobHandler();
 		ArrayList<Volunteer> volunteerList = populateVolunteers(); //read in all volunteers
 		ArrayList<Administrator> adminList = populateAdmins(jobHandler); //read in all admins
 		ArrayList<ParkManager> managerList = populateManagers(jobHandler); //read in all park managers
+		jobHandler.populateVolunteers(volunteerList);
 		
 		AbstractUser currentUser = login(volunteerList, adminList, managerList); //login prompt
 		if (currentUser instanceof Administrator) {
-			administrator(currentUser);
+			administrator(currentUser.getEmail(), adminList);
 		} else if (currentUser instanceof Volunteer) {
 			volunteer(currentUser);
 		} else if (currentUser instanceof ParkManager) {
 			manager(currentUser);
 		}
-
-	}
+		
+		
+	
+		
+	} //end main
 	
 	
 	
 	//print login screen
 	private static AbstractUser login(ArrayList<Volunteer> theVolunteerList, ArrayList<Administrator> theAdminList, ArrayList<ParkManager> theManagerList) {
 		Scanner consoleScanner = new Scanner(System.in);
-		System.out.println("Welcome to the demo client. Enter your username to login:");
+		System.out.println("---LOGIN---");
+		System.out.println("User email: ");
 		String userInput = consoleScanner.next();
 		while (!goodLogin(userInput, theVolunteerList, theManagerList, theAdminList)) {
 			System.out.println("Bad login, try again.");
@@ -103,7 +116,13 @@ public class ConsoleDemo {
 	}
 	
 	//admin menu
-	private static void administrator(AbstractUser currentUser) {
+	private static void administrator(String theEmail, ArrayList<Administrator> theAdminList) {
+		Administrator currentUser = null;
+		for (Administrator admin : theAdminList) {
+			if (admin.getEmail().equals(theEmail)) {
+				currentUser = admin;
+			}
+		}
 		System.out.println();
 		System.out.println("Welcome, Administrator " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		System.out.println("---ADMINISTRATOR OPTIONS---");
@@ -113,7 +132,41 @@ public class ConsoleDemo {
 		Scanner scanner = new Scanner(System.in);
 		String userInput = scanner.next();
 		while (!userInput.equals("3")) {
-			System.out.println("SELECT 3 TO LOGOUT");
+			
+			if (userInput.equals("1")) { //user selects menu choice 1
+				System.out.println("What is the last name of the volunteer you're looking for?");
+				userInput = scanner.next();
+				ArrayList<Volunteer> list = (ArrayList<Volunteer>) currentUser.searchVolunteers(userInput); //get list of same name volunteers
+				System.out.println("List of volunteers with the last name '" + userInput + "'");
+				for (Volunteer volunteer : list) { //iterate through that list of same name volunteers and print them
+					System.out.println("    " + volunteer);
+				}
+				System.out.println();
+				System.out.println();
+				System.out.println("---ADMINISTRATOR OPTIONS---");
+				System.out.println("    1) Search volunteers by last name");
+				System.out.println("    2) View my account information");
+				System.out.println("    3) Logout");
+			} 
+			
+			else if (userInput.equals("2")) {// user selects menu choice 2
+				System.out.println("Account details:");
+				System.out.println("	Name: " + currentUser.getFirstName() + " " + currentUser.getLastName());
+				System.out.println("	Email: " + currentUser.getEmail());
+				System.out.println("	Phone number: " + currentUser.getPhoneNumber());
+				System.out.println("	Address: " + currentUser.getAddress());
+				System.out.println("	Access level: Administrator");
+				System.out.println();
+				System.out.println();
+				System.out.println("---ADMINISTRATOR OPTIONS---");
+				System.out.println("    1) Search volunteers by last name");
+				System.out.println("    2) View my account information");
+				System.out.println("    3) Logout");
+			} 
+			
+			else { //invalid menu choice
+				System.out.println("Not a valid command. Type 1, 2, or 3.");
+			}
 			userInput = scanner.next();
 		}
 		System.out.println("Goodbye.");
@@ -221,4 +274,4 @@ public class ConsoleDemo {
 		}
 		return list;
 	}
-}
+} //end class
