@@ -1,6 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Represents a park manager user.
+ * 
+ * @author David Anderson
+ * @author Dennis Kenyon
+ * @version 09May2015
+ */
+
 public class ParkManager extends AbstractUser {
 	
 	/**List of parks managed by Park Manager. Stored as a unique integer ID number for each park*/
@@ -32,7 +41,7 @@ public class ParkManager extends AbstractUser {
 	 * @param myNewJob the new nob
 	 * @return true if job was posted successfully, false otherwise
 	 */
-	private boolean submitJob(Job myNewJob){
+	public boolean submitJob(Job myNewJob){
 		return jobHandler.addJob(myNewJob);		
 	}
 	
@@ -40,7 +49,7 @@ public class ParkManager extends AbstractUser {
 	 * Returns a list of upcoming jobs this park manager managers
 	 * @return list of upcoming jobs
 	 */
-	private List<Job> viewMyUpcomingJobs(){
+	public List<Job> viewMyUpcomingJobs(){
 		List<Job> myUpcoming = new ArrayList<Job>();
 		for(int index=0;index<myManagedJobs.size();index++){
 			myUpcoming.add(jobHandler.getJobByID(myManagedJobs.get(index)));
@@ -53,7 +62,7 @@ public class ParkManager extends AbstractUser {
 	 * @param jobID the job to seach into
 	 * @return a list of volunteer ID numbers
 	 */
-	private List<Integer> viewVolunteers(int jobID){
+	public List<Integer> viewVolunteers(int jobID){
 		return jobHandler.getJobByID(jobID).getVolunteers();
 	}
 
