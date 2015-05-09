@@ -2,14 +2,15 @@
  * Represents default behavior for User subclasses.
  * 
  * @author Dennis Kenyon
- * @version 01May2015
+ * @version 09May2015
  */
+//
 public abstract class AbstractUser {   
     
-    /** A global counter set up so that each user has a unique integer ID given to him/her. */
-    private static int userIDCounter = 1;
+	/** A global counter set up so that each user has a unique integer ID given to him/her. */
+	private static int userIDCounter = 1;
 	
-    /** The User's first name. */
+	/** The User's first name. */
     private String myFirstName;
     
     /** The User's last name. */
@@ -145,10 +146,11 @@ public abstract class AbstractUser {
     public String toString() {
     	//this adds zeroes to the left of the user's UserID only to look nice; a user's UseID might be
     	//55, but the toString() will show it as 00055.
-    	final String paddedUserID = String.format("%05d", myUserID); 
+    	//final String paddedUserID = String.format("%05d", myUserID); 
         final StringBuilder builder = new StringBuilder();
         builder.append("Name: " + this.getFirstName() + " " + this.getLastName() +  "    ");
-        builder.append("UserID: " + paddedUserID);
+        builder.append("Email: " + this.getEmail() +  "    ");
+        builder.append("Phone number: " + this.getPhoneNumber());
         return builder.toString();
     }
 
