@@ -118,10 +118,10 @@ public class ConsoleDemo {
 				 Calendar cal = Calendar.getInstance();
 			     int currentDay = cal.get(Calendar.DAY_OF_MONTH);
 			     int currentMonth = cal.get(Calendar.MONTH) + 1;
-			     System.out.println("cur day = " + currentDay);
-			     System.out.println("cur month = " + currentMonth);
+			     int currentDayCount = (currentMonth * 30) + currentDay;
+			    
 			     
-				//check to see if 30 jobs exist
+				//check to see if 30 total jobs exist
 				if (theJobList.size() == 30) {
 					System.out.println("--ERROR: Too many pending jobs (30) in the system exist. Try again later.");
 					System.out.println();
@@ -143,8 +143,17 @@ public class ConsoleDemo {
 					jobDay = scanner.nextInt();
 					System.out.print("Job month (mm): ");
 					jobMonth = scanner.nextInt();
+					int leftBound7Day = (jobMonth * 30 + jobDay) - 3; // used for enforcing business rule 2
+				    int rightBound7Day = (jobMonth * 30 + jobDay) + 3; // used for enforcing business rule 2
+					int businessRule2Counter = 0; //used for business rule 2; if over 5, can't add this job
+				    for (Job job : theJobList) { //used to tally businessRule2Counter
+				    	int thisJobsDayCount = job.getMonth() * 30 + job.getDay();
+				    	if (thisJobsDayCount <= rightBound7Day && thisJobsDayCount >= leftBound7Day) {
+				    		businessRule2Counter++;
+				    	}
+				    }
 					//check  for business rule 5
-					if ((currentMonth * 30) + currentDay > ((jobMonth * 30) + jobDay)) {
+					if (currentDayCount > ((jobMonth * 30) + jobDay)) {
 						System.out.println("--ERROR: You can't add a job that is supposed to happen in the past.");
 						System.out.println();
 						System.out.println();
@@ -154,7 +163,14 @@ public class ConsoleDemo {
 						System.out.println();
 						System.out.println();
 						promptManagerMenu();
-					} else {
+					} else if (businessRule2Counter > 4) { //check for business rule 2
+						System.out.println("--ERROR: There are already five jobs scheduled in this seven day period, so this job can't be added.");
+						System.out.println();
+						System.out.println();
+						promptManagerMenu();
+						//end business rule 2 check
+					}
+					else {
 						System.out.print("Park name: ");
 						scanner.nextLine();
 						jobLocation = scanner.nextLine();
