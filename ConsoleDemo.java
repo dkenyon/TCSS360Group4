@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -114,6 +115,12 @@ public class ConsoleDemo {
 		while (!userInput.equals("5")) {
 			
 			if (userInput.equals("1")) {// user selects menu choice 1
+				 Calendar cal = Calendar.getInstance();
+			     int currentDay = cal.get(Calendar.DAY_OF_MONTH);
+			     int currentMonth = cal.get(Calendar.MONTH) + 1;
+			     System.out.println("cur day = " + currentDay);
+			     System.out.println("cur month = " + currentMonth);
+			     
 				//check to see if 30 jobs exist
 				if (theJobList.size() == 30) {
 					System.out.println("--ERROR: Too many pending jobs (30) in the system exist. Try again later.");
@@ -136,60 +143,74 @@ public class ConsoleDemo {
 					jobDay = scanner.nextInt();
 					System.out.print("Job month (mm): ");
 					jobMonth = scanner.nextInt();
-					System.out.print("Park name: ");
-					scanner.nextLine();
-					jobLocation = scanner.nextLine();
-					if (!currentUser.ownsPark(jobLocation)) {
-						System.out.println("--ERROR: You don't own this park and therefore can't create a job for it.");
+					//check  for business rule 5
+					if ((currentMonth * 30) + currentDay > ((jobMonth * 30) + jobDay)) {
+						System.out.println("--ERROR: You can't add a job that is supposed to happen in the past.");
+						System.out.println();
+						System.out.println();
+						promptManagerMenu();
+					} else if ((jobMonth * 30) + jobDay - (currentMonth * 30) + currentDay > 90) {
+						System.out.println("--ERROR: Job is too far from today's date. Jobs must be no more than three months in the future.");
 						System.out.println();
 						System.out.println();
 						promptManagerMenu();
 					} else {
-						System.out.print("Max number of light-load volunteers: ");
-						maxLight = scanner.nextInt();
-						System.out.print("Max number of medium-load volunteers: ");
-						maxMed = scanner.nextInt();
-						System.out.print("Max number of heavy-load volunteers: ");
-						maxHeavy = scanner.nextInt();
-						System.out.println("Other information about the job: ");
+						System.out.print("Park name: ");
 						scanner.nextLine();
-						otherInfo = scanner.nextLine();
-						System.out.println("Your job looks like this:");
-						System.out.println("	Name: " + jobName);
-						System.out.println("	Date: " + jobMonth + "/" + jobDay + "/2015");
-						System.out.println("	Location: " + jobLocation);
-						System.out.println("	Maximum Workers per load:");
-						System.out.println("		Light: " + maxLight);
-						System.out.println("		Medium: " + maxMed);
-						System.out.println("		Heavy: " + maxHeavy);
-						System.out.println("	Other information: " + otherInfo);
-						System.out.println("Submit job request (Y/N)?: ");
-						userInput = scanner.next();
-						if (userInput.equalsIgnoreCase("Y")) {
-							Job job = new Job(jobName, jobMonth, jobDay, jobLocation, maxLight, maxMed, maxHeavy, otherInfo);
-							currentUser.submitJob(job);
-							//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
-							try(FileWriter fileWriter = new FileWriter("supportfiles/jobs.txt", true);
-							          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
-							          PrintWriter out = new PrintWriter(bufferWriter)){
-							     out.print(jobName + "," + jobMonth + "," + jobDay + "," + jobLocation + "," + maxLight + "," + maxMed + "," +
-											maxHeavy + "," + otherInfo + ",");
-							  }  
-							  catch( IOException e ){
-							      // File writing/opening failed at some stage.
-							  }
-							System.out.println("---Your job has been sent in.---\n\n");
-							currentUser.addJob(job); //not only does this job save in the persistent data, but it is also added in this session's job list
-							promptManagerMenu();
-						} else if (userInput.equalsIgnoreCase("N")) {
-							System.out.println("---Job request cancelled.---\n\n");
+						jobLocation = scanner.nextLine();
+						if (!currentUser.ownsPark(jobLocation)) {
+							System.out.println("--ERROR: You don't own this park and therefore can't create a job for it.");
+							System.out.println();
+							System.out.println();
 							promptManagerMenu();
 						} else {
-							System.out.println("Type 'Y' for yes or 'N' for no.");
+							System.out.print("Max number of light-load volunteers: ");
+							maxLight = scanner.nextInt();
+							System.out.print("Max number of medium-load volunteers: ");
+							maxMed = scanner.nextInt();
+							System.out.print("Max number of heavy-load volunteers: ");
+							maxHeavy = scanner.nextInt();
+							System.out.println("Other information about the job: ");
+							scanner.nextLine();
+							otherInfo = scanner.nextLine();
+							System.out.println("Your job looks like this:");
+							System.out.println("	Name: " + jobName);
+							System.out.println("	Date: " + jobMonth + "/" + jobDay + "/2015");
+							System.out.println("	Location: " + jobLocation);
+							System.out.println("	Maximum Workers per load:");
+							System.out.println("		Light: " + maxLight);
+							System.out.println("		Medium: " + maxMed);
+							System.out.println("		Heavy: " + maxHeavy);
+							System.out.println("	Other information: " + otherInfo);
+							System.out.println("Submit job request (Y/N)?: ");
+							userInput = scanner.next();
+							if (userInput.equalsIgnoreCase("Y")) {
+								Job job = new Job(jobName, jobMonth, jobDay, jobLocation, maxLight, maxMed, maxHeavy, otherInfo);
+								currentUser.submitJob(job);
+								//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+								try(FileWriter fileWriter = new FileWriter("supportfiles/jobs.txt", true);
+								          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+								          PrintWriter out = new PrintWriter(bufferWriter)){
+								     out.print(jobName + "," + jobMonth + "," + jobDay + "," + jobLocation + "," + maxLight + "," + maxMed + "," +
+												maxHeavy + "," + otherInfo + ",");
+								  }  
+								  catch( IOException e ){
+								      // File writing/opening failed at some stage.
+								  }
+								System.out.println("---Your job has been sent in.---\n\n");
+								currentUser.addJob(job); //not only does this job save in the persistent data, but it is also added in this session's job list
+								promptManagerMenu();
+							} else if (userInput.equalsIgnoreCase("N")) {
+								System.out.println("---Job request cancelled.---\n\n");
+								promptManagerMenu();
+							} else {
+								System.out.println("Type 'Y' for yes or 'N' for no.");
+							}
 						}
+						
 					}
-					
-				}				
+					}
+									
 				
 			}
 			else if (userInput.equals("2")) {// user selects menu choice 2
