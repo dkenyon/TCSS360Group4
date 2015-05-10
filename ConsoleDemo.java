@@ -316,6 +316,7 @@ public class ConsoleDemo {
 				System.out.println("What is the name of the job you want to sign up for?");
 				scanner.nextLine();
 				String jobName = scanner.nextLine();
+				
 				//check to see that business rule 7 is not violated
 				for (Job job : theJobList) {
 					if (job.getName().equals(jobName)) {
@@ -338,6 +339,7 @@ public class ConsoleDemo {
 					System.out.println();
 					System.out.println();
 					promptVolunteerMenu();
+					//end business rule 7 check
 				} else {
 					for (Job job : theJobList) {
 						if (job.getName().equals(jobName)) {
@@ -359,28 +361,53 @@ public class ConsoleDemo {
 					} else {
 						System.out.println("Enter either heavy, medium, or light for the workload you can contribute.");
 					}
-					for (Job job : currentUser.viewJobsCanSignUpFor()) {
-						if (jobName.equals(job.getName())) {
-							if (currentUser.signUpForJob(job, intWorkLoad) == true) {
-								System.out.println("You have succesfully signed up for " + job.getName() 
-										+ " - " + job.getDay() + "/" + job.getMonth() + "/2015 @ " + job.getLocation() + "!");
-								//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
-								try(FileWriter fileWriter = new FileWriter("supportfiles/volunteersAndJobs.txt", true);
-								          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
-								          PrintWriter out = new PrintWriter(bufferWriter)){
-								     out.print(currentUser.getEmail() + "," + job.getName() + "," + workLoad + ",");
-								  }  
-								  catch( IOException e ){
-									  System.out.println("failed to write");
-								      // File writing/opening failed at some stage.
-								  }
-								System.out.println();
-								System.out.println();
-								promptVolunteerMenu();
-							} else {
-								System.out.println("You were not able to sign up for the job. Review that you're qualified to before signing up.\n\n");
-								promptVolunteerMenu();
-							};
+					// check for business rule 3
+					Job thisJob = null;
+					for (Job job : theJobList) {
+						if (job.getName().equals(jobName)) {
+							thisJob = job;
+						}
+					}
+					if (workLoad.equalsIgnoreCase("heavy") && (thisJob.getHeavyVolunteers().size() / thisJob.getMaxHeavy()) == 1) {
+						System.out.println("--ERROR: Heavy volunteer slots are already filled!");
+						System.out.println();
+						System.out.println();
+						promptVolunteerMenu();
+					} else if (workLoad.equals("medium") && (thisJob.getMediumVolunteers().size() / thisJob.getMaxMed()) == 1) {
+						System.out.println("--ERROR: Medium volunteer slots are already filled!");
+						System.out.println();
+						System.out.println();
+						promptVolunteerMenu();
+					} else if (workLoad.equals("light") && (thisJob.getLightVolunteers().size() / thisJob.getMaxLight()) == 1) {
+						System.out.println("--ERROR: Light volunteer slots are already filled!");
+						System.out.println();
+						System.out.println();
+						promptVolunteerMenu();
+						//end check for business rule 3
+					} else {
+						for (Job job : currentUser.viewJobsCanSignUpFor()) {
+							if (jobName.equals(job.getName())) {
+								if (currentUser.signUpForJob(job, intWorkLoad) == true) {
+									System.out.println("You have succesfully signed up for " + job.getName() 
+											+ " - " + job.getDay() + "/" + job.getMonth() + "/2015 @ " + job.getLocation() + "!");
+									//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+									try(FileWriter fileWriter = new FileWriter("supportfiles/volunteersAndJobs.txt", true);
+									          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+									          PrintWriter out = new PrintWriter(bufferWriter)){
+									     out.print(currentUser.getEmail() + "," + job.getName() + "," + workLoad + ",");
+									  }  
+									  catch( IOException e ){
+										  System.out.println("failed to write");
+									      // File writing/opening failed at some stage.
+									  }
+									System.out.println();
+									System.out.println();
+									promptVolunteerMenu();
+								} else {
+									System.out.println("You were not able to sign up for the job. Review that you're qualified to before signing up.\n\n");
+									promptVolunteerMenu();
+								};
+							}
 						}
 					}
 				}
@@ -409,6 +436,9 @@ public class ConsoleDemo {
 				} else {
 					for (Job job : currentUser.getJobs()) {
 						System.out.println("	" + job.getName() + " - " + job.getMonth() + "/" + job.getDay() + "/2015 @ " + job.getLocation());
+						System.out.println();
+						System.out.println();
+						promptVolunteerMenu();
 					}
 				}
 			} else if (userInput.equals("4")) {
