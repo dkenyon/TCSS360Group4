@@ -7,9 +7,9 @@ import java.util.List;
  * 
  * @author David Anderson
  * @author Dennis Kenyon
- * @version 09May2015
+ * @version 10May2015
  */
-
+//adds 'own parks' checker private method
 public class ParkManager extends AbstractUser {
 	
 	/**List of parks managed by Park Manager. Stored as a String for each park name.*/
@@ -78,6 +78,20 @@ public class ParkManager extends AbstractUser {
 	
 	public List<Job> getMyJobs() {
 		return myManagedJobs;
+	}
+	
+	/**
+	 * Confirms or denies whether or not this park manager actually owns the passed in park.
+	 * @param thePark the park being checked
+	 * @return whether or not this park manater owns thePark
+	 */
+	public boolean ownsPark(final String thePark) {
+		for (String park : myManagedParks) {
+			if (park.equals(thePark)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
