@@ -6,7 +6,7 @@ import java.util.List;
  * 
  * @author David Anderson
  * @author Dennis Kenyon
- * @version 09May2015
+ * @version 10May2015
  */
 
 public class Job {
@@ -115,7 +115,7 @@ public class Job {
 	 * Returns the maximum number of light volunteers needed
 	 * @return max number of light volunteers
 	 */
-	public int getLight(){
+	public int getMaxLight(){
 		return maxLight;
 	}
 	
@@ -123,7 +123,7 @@ public class Job {
 	 * Returns the maximum number of medium volunteers needed
 	 * @return max number of medium volunteers
 	 */
-	public int getMed(){
+	public int getMaxMed(){
 		return maxMed;
 	}
 	
@@ -131,7 +131,7 @@ public class Job {
 	 * Returns the maximum number of heavy volunteers needed
 	 * @return max number of heavy volunteers
 	 */
-	public int getHeavy(){
+	public int getMaxHeavy(){
 		return maxHeavy;
 	}
 	
@@ -215,6 +215,30 @@ public class Job {
 			volunteers.add(volunteer);
 		}
 		
+		return volunteers;
+	}
+	
+	public List<Volunteer> getLightVolunteers() {
+		List<Volunteer> volunteers = new ArrayList<Volunteer>();
+		for (Volunteer volunteer : lightVolunteers) {
+			volunteers.add(volunteer);
+		}
+		return volunteers;
+	}
+	
+	public List<Volunteer> getMediumVolunteers() {
+		List<Volunteer> volunteers = new ArrayList<Volunteer>();
+		for (Volunteer volunteer : mediumVolunteers) {
+			volunteers.add(volunteer);
+		}
+		return volunteers;
+	}
+	
+	public List<Volunteer> getHeavyVolunteers() {
+		List<Volunteer> volunteers = new ArrayList<Volunteer>();
+		for (Volunteer volunteer : heavyVolunteers) {
+			volunteers.add(volunteer);
+		}
 		return volunteers;
 	}
 }
