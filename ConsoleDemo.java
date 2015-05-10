@@ -23,24 +23,12 @@ public class ConsoleDemo {
 		// initialize variables
 		JobHandler jobHandler = new JobHandler();
 		ArrayList<Job> jobList = populateJobs(); //read in all jobs
-		ArrayList<Volunteer> volunteerList = populateVolunteers(jobList); //read in all volunteers
+		ArrayList<Volunteer> volunteerList = populateVolunteers(jobHandler, jobList); //read in all volunteers
 		ArrayList<Administrator> adminList = populateAdmins(jobHandler); //read in all admins
 		
 		jobHandler.populateVolunteers(volunteerList);
 		jobHandler.populateJobs(jobList);
 		ArrayList<ParkManager> managerList = populateManagers(jobHandler, jobList); //read in all park managers
-		
-		for (Job job : jobList) {
-			System.out.println("NAME: " + job.getName());
-			System.out.println("DAY: " + job.getDay());
-			System.out.println("MONTH: " + job.getMonth());
-			System.out.println("LOCATION: " +job.getLocation());
-			System.out.println("LIGHT: " + job.getMaxLight());
-			System.out.println("MEDIUM: " + job.getMaxMed());
-			System.out.println("HEAVY: " + job.getMaxHeavy());
-			System.out.println("INFO: " + job.getInfo());
-			System.out.println();
-		}
 		
 		AbstractUser currentUser = login(volunteerList, adminList, managerList); //login prompt
 		if (currentUser instanceof Administrator) {
@@ -348,11 +336,66 @@ public class ConsoleDemo {
 		String userInput = scanner.next();
 		while (!userInput.equals("5")) {
 			if (userInput.equals("1")) {
-				
+				//String jobName= null;
+				//String workLoad = null;
+				System.out.println("What is the name of the job you want to sign up for?");
+				scanner.nextLine();
+				String jobName = scanner.nextLine();
+				System.out.println("What is the work load you're able to contribute (type either heavy, medium, or light)?");
+				String workLoad = scanner.next();
+				int intWorkLoad = -1;
+				if (workLoad.equals("heavy")) {
+					intWorkLoad = 2;
+				} else if (workLoad.equals("medium")) {
+					intWorkLoad = 1;
+				} else if (workLoad.equals("light")) {
+					intWorkLoad = 0;
+				}
+				for (Job job : currentUser.viewJobsCanSignUpFor()) {
+					if (jobName.equals(job.getName())) {
+						if (currentUser.signUpForJob(job, intWorkLoad) == true) {
+							System.out.println("You have succesfully signed up for " + job.getName() 
+									+ " - " + job.getDay() + "/" + job.getMonth() + "/2015 @ " + job.getLocation() + "!");
+							//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+							try(FileWriter fileWriter = new FileWriter("supportfiles/volunteersAndJobs.txt", true);
+							          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+							          PrintWriter out = new PrintWriter(bufferWriter)){
+							     out.print(currentUser.getEmail() + "," + job.getName() + "," + workLoad + ",");
+							  }  
+							  catch( IOException e ){
+							      // File writing/opening failed at some stage.
+							  }
+							System.out.println("\n\n---VOLUNTEER OPTIONS---");
+							System.out.println("    1) Sign up for a job");
+							System.out.println("    2) View upcoming jobs I can sign up for");
+							System.out.println("    3) View jobs currently signed up for");
+							System.out.println("    4) View my account information");
+							System.out.println("    5) Logout");
+						} else {
+							System.out.println("You were not able to sign up for the job. Review that you're qualified to before signing up.\n\n");
+							System.out.println("---VOLUNTEER OPTIONS---");
+							System.out.println("    1) Sign up for a job");
+							System.out.println("    2) View upcoming jobs I can sign up for");
+							System.out.println("    3) View jobs currently signed up for");
+							System.out.println("    4) View my account information");
+							System.out.println("    5) Logout");
+						};
+					}
+				}
 			} 
 			
 			else if (userInput.equals("2")) {
-				
+				System.out.println("Available jobs I can sign up for: ");
+				for (Job job : currentUser.viewJobsCanSignUpFor()) {
+					System.out.println("	" + job.getName() + " - " + job.getMonth() + "/" + job.getMonth() + "/2015 @ " + job.getLocation());
+				}
+				System.out.println("-End of available jobs list.-");
+				System.out.println("---VOLUNTEER OPTIONS---");
+				System.out.println("    1) Sign up for a job");
+				System.out.println("    2) View upcoming jobs I can sign up for");
+				System.out.println("    3) View jobs currently signed up for");
+				System.out.println("    4) View my account information");
+				System.out.println("    5) Logout");
 			} 
 			
 			else if (userInput.equals("3")) {
@@ -367,7 +410,7 @@ public class ConsoleDemo {
 					System.out.println("    5) Logout");
 				} else {
 					for (Job job : currentUser.getJobs()) {
-						System.out.println("	" + job.getName() + " - " + job.getDay() + "/" + job.getMonth() + "/2015 @ " + job.getLocation());
+						System.out.println("	" + job.getName() + " - " + job.getMonth() + "/" + job.getDay() + "/2015 @ " + job.getLocation());
 					}
 				}
 			} else if (userInput.equals("4")) {
@@ -485,7 +528,7 @@ public class ConsoleDemo {
 	}
 
 	//populates list of volunteers at startup
-	private static ArrayList<Volunteer> populateVolunteers(ArrayList<Job> theJobList) throws FileNotFoundException {
+	private static ArrayList<Volunteer> populateVolunteers(JobHandler theJobHandler, ArrayList<Job> theJobList) throws FileNotFoundException {
 		File volunteersFile = new File("supportfiles/volunteers.txt");
 		ArrayList<Volunteer> list = new ArrayList<Volunteer>();
 		Scanner scanner = new Scanner(volunteersFile);
@@ -505,7 +548,7 @@ public class ConsoleDemo {
 			if (firstName.charAt(0) == '\r') {
 				firstName = firstName.substring(2);
 			}
-			Volunteer volunteer = new Volunteer(firstName, lastName, email, phoneNumber, address);
+			Volunteer volunteer = new Volunteer(firstName, lastName, email, phoneNumber, address, theJobHandler);
 			list.add(volunteer);
 		}
 		
