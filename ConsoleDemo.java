@@ -23,7 +23,7 @@ public class ConsoleDemo {
 		// initialize variables
 		JobHandler jobHandler = new JobHandler();
 		ArrayList<Job> jobList = populateJobs(); //read in all jobs
-		ArrayList<Volunteer> volunteerList = populateVolunteers(); //read in all volunteers
+		ArrayList<Volunteer> volunteerList = populateVolunteers(jobList); //read in all volunteers
 		ArrayList<Administrator> adminList = populateAdmins(jobHandler); //read in all admins
 		
 		jobHandler.populateVolunteers(volunteerList);
@@ -35,9 +35,9 @@ public class ConsoleDemo {
 			System.out.println("DAY: " + job.getDay());
 			System.out.println("MONTH: " + job.getMonth());
 			System.out.println("LOCATION: " +job.getLocation());
-			System.out.println("LIGHT: " + job.getLight());
-			System.out.println("MEDIUM: " + job.getMed());
-			System.out.println("HEAVY: " + job.getHeavy());
+			System.out.println("LIGHT: " + job.getMaxLight());
+			System.out.println("MEDIUM: " + job.getMaxMed());
+			System.out.println("HEAVY: " + job.getMaxHeavy());
 			System.out.println("INFO: " + job.getInfo());
 			System.out.println();
 		}
@@ -46,17 +46,12 @@ public class ConsoleDemo {
 		if (currentUser instanceof Administrator) {
 			administrator(currentUser.getEmail(), adminList);
 		} else if (currentUser instanceof Volunteer) {
-			volunteer(currentUser);
+			volunteer(currentUser.getEmail(), volunteerList);
 		} else if (currentUser instanceof ParkManager) {
 			manager(currentUser.getEmail(), managerList);
 		}
-		
-		
-	
-		
+			
 	} //end main
-	
-	
 	
 	//print login screen
 	private static AbstractUser login(ArrayList<Volunteer> theVolunteerList, ArrayList<Administrator> theAdminList, ArrayList<ParkManager> theManagerList) {
@@ -122,6 +117,7 @@ public class ConsoleDemo {
 				currentUser = manager;
 			}
 		}
+		
 		System.out.println();
 		System.out.println("Welcome, ParkManager " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		System.out.println("---PARK MANAGER OPTIONS---");
@@ -225,9 +221,27 @@ public class ConsoleDemo {
 				System.out.println("    5) Logout");
 			}
 			else if (userInput.equals("3")) {// user selects menu choice 3
-				System.out.println("---Volunteers for job I manage:---");
-				System.out.println("Which job do you want to view volunteers for?");
-//				for ()
+				System.out.println("---Volunteers for jobs I manage:---");
+				
+				for (Job job : currentUser.getMyJobs()) {
+					System.out.println("	Job: " + job.getName() + " @ " + job.getLocation());
+					if (job.getVolunteers().size() == 0) {
+						System.out.println("	-NO VOLUNTEERS POSTED FOR THIS JOB-");
+					} else {
+						for (Volunteer volunteer : job.getVolunteers()) {
+							System.out.println("		" + volunteer);
+						}
+					}
+					
+					System.out.println();
+					System.out.println();
+				}
+				System.out.println("---PARK MANAGER OPTIONS---");
+				System.out.println("    1) Submit a new job request");
+				System.out.println("    2) View upcoming jobs in parks I manage");
+				System.out.println("    3) View the volunteers for a for a job in the parks I manage");
+				System.out.println("    4) View my account information");
+				System.out.println("    5) Logout");
 			}
 			else if(userInput.equals("4")) {// user selects menu choice 4
 				System.out.println("Account details:");
@@ -315,7 +329,13 @@ public class ConsoleDemo {
 	}
 	
 	//volunteer menu
-	private static void volunteer(AbstractUser currentUser) {
+	private static void volunteer(String theEmail, ArrayList<Volunteer> theVolunteerList) {
+		Volunteer currentUser = null;
+		for (Volunteer volunteer : theVolunteerList) {
+			if (volunteer.getEmail().equals(theEmail)) {
+				currentUser = volunteer;
+			}
+		}
 		System.out.println();
 		System.out.println("Welcome, Volunteer " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		System.out.println("---VOLUNTEER OPTIONS---");
@@ -327,7 +347,47 @@ public class ConsoleDemo {
 		Scanner scanner = new Scanner(System.in);
 		String userInput = scanner.next();
 		while (!userInput.equals("5")) {
-			System.out.println("SELECT 5 TO LOGOUT");
+			if (userInput.equals("1")) {
+				
+			} 
+			
+			else if (userInput.equals("2")) {
+				
+			} 
+			
+			else if (userInput.equals("3")) {
+				System.out.println("Jobs currently signed up for:");
+				if (currentUser.getJobs().size() == 0) {
+					System.out.println("-NOT SIGNED UP FOR ANY JOBS YET-");
+					System.out.println("---VOLUNTEER OPTIONS---");
+					System.out.println("    1) Sign up for a job");
+					System.out.println("    2) View upcoming jobs I can sign up for");
+					System.out.println("    3) View jobs currently signed up for");
+					System.out.println("    4) View my account information");
+					System.out.println("    5) Logout");
+				} else {
+					for (Job job : currentUser.getJobs()) {
+						System.out.println("	" + job.getName() + " - " + job.getDay() + "/" + job.getMonth() + "/2015 @ " + job.getLocation());
+					}
+				}
+			} else if (userInput.equals("4")) {
+				System.out.println("Account details:");
+				System.out.println("	Name: " + currentUser.getFirstName() + " " + currentUser.getLastName());
+				System.out.println("	Email: " + currentUser.getEmail());
+				System.out.println("	Phone number: " + currentUser.getPhoneNumber());
+				System.out.println("	Address: " + currentUser.getAddress());
+				System.out.println("	Access level: Volunteer");
+				System.out.println();
+				System.out.println();
+				System.out.println("---VOLUNTEER OPTIONS---");
+				System.out.println("    1) Sign up for a job");
+				System.out.println("    2) View upcoming jobs I can sign up for");
+				System.out.println("    3) View jobs currently signed up for");
+				System.out.println("    4) View my account information");
+				System.out.println("    5) Logout");
+			} else {
+				System.out.println("Not a valid command. Type 1, 2, 3, 4 or 5.");
+			}
 			userInput = scanner.next();
 		}
 		System.out.println("Goodbye.");
@@ -425,7 +485,7 @@ public class ConsoleDemo {
 	}
 
 	//populates list of volunteers at startup
-	private static ArrayList<Volunteer> populateVolunteers() throws FileNotFoundException {
+	private static ArrayList<Volunteer> populateVolunteers(ArrayList<Job> theJobList) throws FileNotFoundException {
 		File volunteersFile = new File("supportfiles/volunteers.txt");
 		ArrayList<Volunteer> list = new ArrayList<Volunteer>();
 		Scanner scanner = new Scanner(volunteersFile);
@@ -448,7 +508,36 @@ public class ConsoleDemo {
 			Volunteer volunteer = new Volunteer(firstName, lastName, email, phoneNumber, address);
 			list.add(volunteer);
 		}
+		
+		//fill in volunteers' jobs
+		File volunteerJobsFile = new File("supportfiles/volunteersAndJobs.txt");
+		Scanner scanner2 = new Scanner(volunteerJobsFile);
+		scanner2.useDelimiter(",");
+		while (scanner2.hasNext()) {
+			String email2 = scanner2.next();
+			String jobName = scanner2.next();
+			String load = scanner2.next();
+			if (email2.charAt(0) == '\r') {
+				email2 = email2.substring(2);
+			}
+			for (Volunteer volunteer2 : list) {
+				for (Job job : theJobList) {
+					if (volunteer2.getEmail().equals(email2) && job.getName().equals(jobName)) {
+						volunteer2.addJob(job);
+						if (load.equals("light")) {
+							job.signUpForLight(volunteer2);
+						} else if (load.equals("medium")) {
+							job.signUpForMedium(volunteer2);
+						} else if (load.equals("heavy")) {
+							job.signUpForHeavy(volunteer2);
+						}
+					}
+				}
+			}
+		}
+		
 		scanner.close();
+		scanner2.close();
 		return list;
 	}
 
