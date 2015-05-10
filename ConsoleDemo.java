@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @author Dennis Kenyon
  * @author Brian Crabtree
  * @author David Anderson
- * @version 09May2015
+ * @version 10May2015
  */
 
 public class ConsoleDemo {
@@ -36,7 +36,7 @@ public class ConsoleDemo {
 		} else if (currentUser instanceof Volunteer) {
 			volunteer(currentUser.getEmail(), volunteerList);
 		} else if (currentUser instanceof ParkManager) {
-			manager(currentUser.getEmail(), managerList);
+			manager(currentUser.getEmail(), managerList, jobList);
 		}
 			
 	} //end main
@@ -98,7 +98,7 @@ public class ConsoleDemo {
 
 
 	//manager menu
-	private static void manager(String theEmail, ArrayList<ParkManager> theManagerList) throws FileNotFoundException {
+	private static void manager(String theEmail, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList) throws FileNotFoundException {
 		ParkManager currentUser = null;
 		for (ParkManager manager : theManagerList) {
 			if (manager.getEmail().equals(theEmail)) {
@@ -108,87 +108,80 @@ public class ConsoleDemo {
 		
 		System.out.println();
 		System.out.println("Welcome, ParkManager " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
-		System.out.println("---PARK MANAGER OPTIONS---");
-		System.out.println("    1) Submit a new job request");
-		System.out.println("    2) View upcoming jobs in parks I manage");
-		System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-		System.out.println("    4) View my account information");
-		System.out.println("    5) Logout");
+		promptManagerMenu();
 		Scanner scanner = new Scanner(System.in);
 		String userInput = scanner.next();
 		while (!userInput.equals("5")) {
 			
 			if (userInput.equals("1")) {// user selects menu choice 1
-				String jobName = null;
-				int jobMonth = 0;
-				int jobDay = 0;
-				String jobLocation = null;
-				int maxLight = 0;
-				int maxMed = 0;
-				int maxHeavy = 0;
-				String otherInfo = null;
-				System.out.println("JOB REQUEST FORM");
-				System.out.print("Job name: ");
-				scanner.nextLine(); //consume line, go to next
-				jobName = scanner.nextLine();
-				System.out.print("Job day (dd): ");
-				jobDay = scanner.nextInt();
-				System.out.print("Job month (mm): ");
-				jobDay = scanner.nextInt();
-				System.out.print("Park name: ");
-				scanner.nextLine();
-				jobLocation = scanner.nextLine();
-				System.out.print("Max number of light-load volunteers: ");
-				maxLight = scanner.nextInt();
-				System.out.print("Max number of medium-load volunteers: ");
-				maxMed = scanner.nextInt();
-				System.out.print("Max number of heavy-load volunteers: ");
-				maxHeavy = scanner.nextInt();
-				System.out.println("Other information about the job: ");
-				scanner.nextLine();
-				otherInfo = scanner.nextLine();
-				System.out.println("Your job looks like this:");
-				System.out.println("	Name: " + jobName);
-				System.out.println("	Date: " + jobMonth + "/" + jobDay + "/2015");
-				System.out.println("	Location: " + jobLocation);
-				System.out.println("	Maximum Workers per load:");
-				System.out.println("		Light: " + maxLight);
-				System.out.println("		Medium: " + maxMed);
-				System.out.println("		Heavy: " + maxHeavy);
-				System.out.println("	Other information: " + otherInfo);
-				System.out.println("Submit job request (Y/N)?: ");
-				userInput = scanner.next();
-				if (userInput.equalsIgnoreCase("Y")) {
-					Job job = new Job(jobName, jobMonth, jobDay, jobLocation, maxLight, maxMed, maxHeavy, otherInfo);
-					currentUser.submitJob(job);
-					//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
-					try(FileWriter fileWriter = new FileWriter("supportfiles/jobs.txt", true);
-					          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
-					          PrintWriter out = new PrintWriter(bufferWriter)){
-					     out.print(jobName + "," + jobMonth + "," + jobDay + "," + jobLocation + "," + maxLight + "," + maxMed + "," +
-									maxHeavy + "," + otherInfo + ",");
-					  }  
-					  catch( IOException e ){
-					      // File writing/opening failed at some stage.
-					  }
-					System.out.println("---Your job has been sent in.---\n\n");
-					System.out.println("---PARK MANAGER OPTIONS---");
-					System.out.println("    1) Submit a new job request");
-					System.out.println("    2) View upcoming jobs in parks I manage");
-					System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-					System.out.println("    4) View my account information");
-					System.out.println("    5) Logout");
-				} else if (userInput.equalsIgnoreCase("N")) {
-					System.out.println("---Job request cancelled.---\n\n");
-					System.out.println("---PARK MANAGER OPTIONS---");
-					System.out.println("    1) Submit a new job request");
-					System.out.println("    2) View upcoming jobs in parks I manage");
-					System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-					System.out.println("    4) View my account information");
-					System.out.println("    5) Logout");
+				//check to see if 30 jobs exist
+				if (theJobList.size() == 30) {
+					System.out.println("--ERROR: Too many pending jobs (30) in the system exist. Try again later.");
+					System.out.println();
+					promptManagerMenu();
 				} else {
-					System.out.println("Type 'Y' for yes or 'N' for no.");
-				}
+					String jobName = null;
+					int jobMonth = 0;
+					int jobDay = 0;
+					String jobLocation = null;
+					int maxLight = 0;
+					int maxMed = 0;
+					int maxHeavy = 0;
+					String otherInfo = null;
+					System.out.println("JOB REQUEST FORM");
+					System.out.print("Job name: ");
+					scanner.nextLine(); //consume line, go to next
+					jobName = scanner.nextLine();
+					System.out.print("Job day (dd): ");
+					jobDay = scanner.nextInt();
+					System.out.print("Job month (mm): ");
+					jobDay = scanner.nextInt();
+					System.out.print("Park name: ");
+					scanner.nextLine();
+					jobLocation = scanner.nextLine();
+					System.out.print("Max number of light-load volunteers: ");
+					maxLight = scanner.nextInt();
+					System.out.print("Max number of medium-load volunteers: ");
+					maxMed = scanner.nextInt();
+					System.out.print("Max number of heavy-load volunteers: ");
+					maxHeavy = scanner.nextInt();
+					System.out.println("Other information about the job: ");
+					scanner.nextLine();
+					otherInfo = scanner.nextLine();
+					System.out.println("Your job looks like this:");
+					System.out.println("	Name: " + jobName);
+					System.out.println("	Date: " + jobMonth + "/" + jobDay + "/2015");
+					System.out.println("	Location: " + jobLocation);
+					System.out.println("	Maximum Workers per load:");
+					System.out.println("		Light: " + maxLight);
+					System.out.println("		Medium: " + maxMed);
+					System.out.println("		Heavy: " + maxHeavy);
+					System.out.println("	Other information: " + otherInfo);
+					System.out.println("Submit job request (Y/N)?: ");
+					userInput = scanner.next();
+					if (userInput.equalsIgnoreCase("Y")) {
+						Job job = new Job(jobName, jobMonth, jobDay, jobLocation, maxLight, maxMed, maxHeavy, otherInfo);
+						currentUser.submitJob(job);
+						//following try/catch is from: http://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+						try(FileWriter fileWriter = new FileWriter("supportfiles/jobs.txt", true);
+						          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+						          PrintWriter out = new PrintWriter(bufferWriter)){
+						     out.print(jobName + "," + jobMonth + "," + jobDay + "," + jobLocation + "," + maxLight + "," + maxMed + "," +
+										maxHeavy + "," + otherInfo + ",");
+						  }  
+						  catch( IOException e ){
+						      // File writing/opening failed at some stage.
+						  }
+						System.out.println("---Your job has been sent in.---\n\n");
+						promptManagerMenu();
+					} else if (userInput.equalsIgnoreCase("N")) {
+						System.out.println("---Job request cancelled.---\n\n");
+						promptManagerMenu();
+					} else {
+						System.out.println("Type 'Y' for yes or 'N' for no.");
+					}
+				}				
+				
 			}
 			else if (userInput.equals("2")) {// user selects menu choice 2
 				System.out.println("---Upcoming jobs for parks I manage:---");
@@ -201,12 +194,7 @@ public class ConsoleDemo {
 					}
 				}
 				System.out.println("---End of upcoming jobs list.---\n\n");
-				System.out.println("---PARK MANAGER OPTIONS---");
-				System.out.println("    1) Submit a new job request");
-				System.out.println("    2) View upcoming jobs in parks I manage");
-				System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-				System.out.println("    4) View my account information");
-				System.out.println("    5) Logout");
+				promptManagerMenu();
 			}
 			else if (userInput.equals("3")) {// user selects menu choice 3
 				System.out.println("---Volunteers for jobs I manage:---");
@@ -224,12 +212,7 @@ public class ConsoleDemo {
 					System.out.println();
 					System.out.println();
 				}
-				System.out.println("---PARK MANAGER OPTIONS---");
-				System.out.println("    1) Submit a new job request");
-				System.out.println("    2) View upcoming jobs in parks I manage");
-				System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-				System.out.println("    4) View my account information");
-				System.out.println("    5) Logout");
+				promptManagerMenu();
 			}
 			else if(userInput.equals("4")) {// user selects menu choice 4
 				System.out.println("Account details:");
@@ -240,12 +223,7 @@ public class ConsoleDemo {
 				System.out.println("	Access level: Park Manager");
 				System.out.println();
 				System.out.println();
-				System.out.println("---PARK MANAGER OPTIONS---");
-				System.out.println("    1) Submit a new job request");
-				System.out.println("    2) View upcoming jobs in parks I manage");
-				System.out.println("    3) View the volunteers for a for a job in the parks I manage");
-				System.out.println("    4) View my account information");
-				System.out.println("    5) Logout");
+				promptManagerMenu();
 				
 			} else {
 				System.out.println("Not a valid command. Type 1, 2, 3, 4, or 5.");
@@ -267,10 +245,7 @@ public class ConsoleDemo {
 		}
 		System.out.println();
 		System.out.println("Welcome, Administrator " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
-		System.out.println("---ADMINISTRATOR OPTIONS---");
-		System.out.println("    1) Search volunteers by last name");
-		System.out.println("    2) View my account information");
-		System.out.println("    3) Logout");
+		promptAdminMenu();
 		Scanner scanner = new Scanner(System.in);
 		String userInput = scanner.next();
 		while (!userInput.equals("3")) {
@@ -285,10 +260,7 @@ public class ConsoleDemo {
 				}
 				System.out.println();
 				System.out.println();
-				System.out.println("---ADMINISTRATOR OPTIONS---");
-				System.out.println("    1) Search volunteers by last name");
-				System.out.println("    2) View my account information");
-				System.out.println("    3) Logout");
+				promptAdminMenu();
 			} 
 			
 			else if (userInput.equals("2")) {// user selects menu choice 2
@@ -300,10 +272,7 @@ public class ConsoleDemo {
 				System.out.println("	Access level: Administrator");
 				System.out.println();
 				System.out.println();
-				System.out.println("---ADMINISTRATOR OPTIONS---");
-				System.out.println("    1) Search volunteers by last name");
-				System.out.println("    2) View my account information");
-				System.out.println("    3) Logout");
+				promptAdminMenu();
 			} 
 			
 			else { //invalid menu choice
@@ -326,12 +295,7 @@ public class ConsoleDemo {
 		}
 		System.out.println();
 		System.out.println("Welcome, Volunteer " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
-		System.out.println("---VOLUNTEER OPTIONS---");
-		System.out.println("    1) Sign up for a job");
-		System.out.println("    2) View upcoming jobs I can sign up for");
-		System.out.println("    3) View jobs currently signed up for");
-		System.out.println("    4) View my account information");
-		System.out.println("    5) Logout");
+		promptVolunteerMenu();
 		Scanner scanner = new Scanner(System.in);
 		String userInput = scanner.next();
 		while (!userInput.equals("5")) {
@@ -365,20 +329,12 @@ public class ConsoleDemo {
 							  catch( IOException e ){
 							      // File writing/opening failed at some stage.
 							  }
-							System.out.println("\n\n---VOLUNTEER OPTIONS---");
-							System.out.println("    1) Sign up for a job");
-							System.out.println("    2) View upcoming jobs I can sign up for");
-							System.out.println("    3) View jobs currently signed up for");
-							System.out.println("    4) View my account information");
-							System.out.println("    5) Logout");
+							System.out.println();
+							System.out.println();
+							promptVolunteerMenu();
 						} else {
 							System.out.println("You were not able to sign up for the job. Review that you're qualified to before signing up.\n\n");
-							System.out.println("---VOLUNTEER OPTIONS---");
-							System.out.println("    1) Sign up for a job");
-							System.out.println("    2) View upcoming jobs I can sign up for");
-							System.out.println("    3) View jobs currently signed up for");
-							System.out.println("    4) View my account information");
-							System.out.println("    5) Logout");
+							promptVolunteerMenu();
 						};
 					}
 				}
@@ -390,24 +346,14 @@ public class ConsoleDemo {
 					System.out.println("	" + job.getName() + " - " + job.getMonth() + "/" + job.getMonth() + "/2015 @ " + job.getLocation());
 				}
 				System.out.println("-End of available jobs list.-");
-				System.out.println("---VOLUNTEER OPTIONS---");
-				System.out.println("    1) Sign up for a job");
-				System.out.println("    2) View upcoming jobs I can sign up for");
-				System.out.println("    3) View jobs currently signed up for");
-				System.out.println("    4) View my account information");
-				System.out.println("    5) Logout");
+				promptVolunteerMenu();
 			} 
 			
 			else if (userInput.equals("3")) {
 				System.out.println("Jobs currently signed up for:");
 				if (currentUser.getJobs().size() == 0) {
 					System.out.println("-NOT SIGNED UP FOR ANY JOBS YET-");
-					System.out.println("---VOLUNTEER OPTIONS---");
-					System.out.println("    1) Sign up for a job");
-					System.out.println("    2) View upcoming jobs I can sign up for");
-					System.out.println("    3) View jobs currently signed up for");
-					System.out.println("    4) View my account information");
-					System.out.println("    5) Logout");
+					promptVolunteerMenu();
 				} else {
 					for (Job job : currentUser.getJobs()) {
 						System.out.println("	" + job.getName() + " - " + job.getMonth() + "/" + job.getDay() + "/2015 @ " + job.getLocation());
@@ -422,12 +368,7 @@ public class ConsoleDemo {
 				System.out.println("	Access level: Volunteer");
 				System.out.println();
 				System.out.println();
-				System.out.println("---VOLUNTEER OPTIONS---");
-				System.out.println("    1) Sign up for a job");
-				System.out.println("    2) View upcoming jobs I can sign up for");
-				System.out.println("    3) View jobs currently signed up for");
-				System.out.println("    4) View my account information");
-				System.out.println("    5) Logout");
+				promptVolunteerMenu();
 			} else {
 				System.out.println("Not a valid command. Type 1, 2, 3, 4 or 5.");
 			}
@@ -436,6 +377,35 @@ public class ConsoleDemo {
 		System.out.println("Goodbye.");
 		System.out.println("---CONSOLE DEMO OFFLINE---");
 		scanner.close();
+	}
+	
+	
+	//pritns out the manager menu
+	private static void promptManagerMenu() {
+		System.out.println("---PARK MANAGER OPTIONS---");
+		System.out.println("    1) Submit a new job request");
+		System.out.println("    2) View upcoming jobs in parks I manage");
+		System.out.println("    3) View the volunteers for a for a job in the parks I manage");
+		System.out.println("    4) View my account information");
+		System.out.println("    5) Logout");
+	}
+	
+	//prints out the volunteer menu
+	private static void promptVolunteerMenu() {
+		System.out.println("---VOLUNTEER OPTIONS---");
+		System.out.println("    1) Sign up for a job");
+		System.out.println("    2) View upcoming jobs I can sign up for");
+		System.out.println("    3) View jobs currently signed up for");
+		System.out.println("    4) View my account information");
+		System.out.println("    5) Logout");
+	}
+	
+	//prints out the admin menu
+	private static void promptAdminMenu() {
+		System.out.println("---ADMINISTRATOR OPTIONS---");
+		System.out.println("    1) Search volunteers by last name");
+		System.out.println("    2) View my account information");
+		System.out.println("    3) Logout");
 	}
 
 	/*------------------------------------INITIALIZATION METHODS------------------------------------*/
