@@ -5,9 +5,9 @@ import java.util.List;
  * Represents an object which manages the list of available jobs for users to interact with
  * 
  * @author David Anderson, Dennis Kenyon, Brian Crabtree
- * @version 09May2015
+ * @version 10May2015
  */
-
+//changed getJobForVol to not use userid anymore
 public class JobHandler {
 	
 	/** The list of jobs*/
@@ -20,8 +20,8 @@ public class JobHandler {
 	 * Initializing the JobHandler
 	 */
 	public JobHandler(){
-		myJobList = new ArrayList<Job>();
-		myVolunteerList = new ArrayList<Volunteer>();
+		myJobList = null;
+		myVolunteerList = null;
 	}
 	
 	/**
@@ -51,38 +51,34 @@ public class JobHandler {
 		return myJobList.remove(theJobToDelete);
 	}
 	
-//	/**
-//	 * Finds a specified job matching the given unique jobID within the joblist and returns it
-//	 * @param theJobID the jobID to search for
-//	 * @return job object matching corresponding jobID or null if job does not exit
-//	 */
-//	public Job getJobByID(int theJobID){
-//		Job ptr = null;
-//		for(int index=0;index < myJobList.size();index++){
-//			ptr = myJobList.get(index);
-//			if(ptr.getJobID() == theJobID){
-//				return ptr;
-//			}
-//		}
-//		return null;
-//	}
+	/**
+	 * Finds a specified job matching the given unique jobID within the joblist and returns it
+	 * @param theJobID the jobID to search for
+	 * @return job object matching corresponding jobID or null if job does not exit
+	 */
+	public Job getJob(Job theJob){
+		for (Job job : myJobList) {
+			if (theJob.getName().equals(job.getName()) && theJob.getLocation().equals(job.getLocation())) {
+				return job;
+			}
+		}
+		return null;
+	}
 	
-//	/**
-//	 * Looks for jobs which the given volunteer has NOT signed up for
-//	 * @param theVolunteerID in the volunteer to search for
-//	 * @return a list of jobs which the volunteer has NOT signed up for
-//	 */
-//	public List<Job> getJobForVol(int theVolunteerID){
-//		List<Job> returnList = new ArrayList<Job>();
-//		Job ptr = null;
-//		for(int index=0;index < myJobList.size();index++){
-//			ptr = myJobList.get(index);
-//			if(!ptr.containsVolunteer(theVolunteerID)){
-//				returnList.add(ptr);
-//			}
-//		}
-//		return returnList;
-//	}
+	/**
+	 * Looks for jobs which the given volunteer has NOT signed up for
+	 * @param theVolunteer the volunteer being analyzed
+	 * @return a list of jobs which the volunteer has NOT signed up for
+	 */
+	public List<Job> getJobForVol(Volunteer theVolunteer){
+		ArrayList<Job> returnList = new ArrayList<Job>();
+		for (Job job : myJobList) {
+			if (!theVolunteer.getJobs().contains(job)) {
+				returnList.add(job);
+			}
+		}
+		return returnList;
+	}
         
     /**
      * Looks for volunteers by last name
@@ -102,17 +98,39 @@ public class JobHandler {
         return matches;
     }
     
+    /**
+     * Prints a list of all volunteers in the system.
+     */
     public void printVolunteers() {
     	for (Volunteer volunteer : myVolunteerList) {
     		System.out.println(volunteer);
     	}
     }
     
+    
+    /**
+     * Populates the master volunteer list.
+     * @param theList the list of volunteers
+     */
     public void populateVolunteers(ArrayList<Volunteer> theList) {
     	myVolunteerList = theList;
     }
     
+    
+    /**
+     * Populates the master job list.
+     * @param theList the list of jobs
+     */
     public void populateJobs(ArrayList<Job> theList) {
     	myJobList = theList;
+    }
+    
+    
+    /**
+     * Gets a list of every job listed in the system.
+     * @return a master list of every job.
+     */
+    public List<Job> getJobs() {
+    	return myJobList;
     }
 }
