@@ -15,12 +15,16 @@ public class AdministratorTest {
     /** An Administrator to use in the tests. */
     private Administrator myAdmin;
     
+    /**Static reference to the JobHandler class*/
+	private static JobHandler myJobHandler = new JobHandler();
+    
     /**
      * A method to initialize the test fixture before each test.
      */
     @Before
     public void setUp() {
-    	myAdmin = new Administrator("John", "Doe", "johndoe@gmail.com", "8675309", "123 Fake St");
+ 
+    	myAdmin = new Administrator("John", "Doe", "johndoe@gmail.com", "8675309", "123 Fake St", myJobHandler);
     }
     
 
@@ -29,26 +33,18 @@ public class AdministratorTest {
      */
     @Test
     public void testSearchVolunteers() {
-    	Administrator user1 = new Administrator("Bill", "Clinton", "ididnotdoit@yahoo.com", "9876543210", "234 Spring St");
-    	Administrator user2 = new Administrator("George", "Bush", "strategery@hotmail.com", "654987321", "345 Oak Dr");
-    	Administrator user3 = new Administrator("George", "Bush Sr", "aaa@gmail.com", "354987321", "345 Oak Dr");
-    	myAdmin.addToTestList(user1);
-    	myAdmin.addToTestList(user2);
-    	myAdmin.addToTestList(user3);
+    	ArrayList<Volunteer> list = new ArrayList<Volunteer>();
+    	list.add(new Volunteer("John", "Smith", "johnsmith@gmail.com", "2534445555", "123 Fake Street", myJobHandler));
+    	list.add(new Volunteer("Jacob", "Smith", "jacobsmith@gmail.com", "3604448796", "456 Fake Street", myJobHandler));
+    	list.add(new Volunteer("Mary", "Shelly", "maryshelly@gmail.com", "2538791150", "789 Fake Street", myJobHandler));
+    	myJobHandler.populateVolunteers(list);
     	
-    	ArrayList<Administrator> testList = new ArrayList<Administrator>();
-    	testList.add(user2);
-        assertEquals("testSearchVolunteers failed!", testList,
-                     myAdmin.searchVolunteers("Bush"));
+    	ArrayList<Volunteer> list2 = (ArrayList<Volunteer>) myJobHandler.getVolunteerByLastName("Smith");
+    	ArrayList<Volunteer> list3 = (ArrayList<Volunteer>) myAdmin.searchVolunteers("Smith");
+    	System.out.println(list);
+    	System.out.println(list2);
+        assertEquals("testSearchVolunteers failed!", list2, list3);
     }
 
-    /**
-     * Test method for {@link Administrator#toString()}.
-     */
-    @Test
-    public void testToString() {
-        assertEquals("toString() produced an unexpected result!",
-                     "Name: John Doe    UserID: 00001", myAdmin.toString());
-    }
 
 }
