@@ -18,25 +18,25 @@ public class VolunteerTest {
     @Before
     public void setUp() {
     	myVolunteer1 = new Volunteer("Abe", "Lincoln", "anonymous@ftp.com", 
-                "123-456-7890", "123 Broad St. Nowhere, OK 73038");
+                "123-456-7890", "123 Broad St. Nowhere, OK 73038", myJobHandler);
         myVolunteer2 = new Volunteer("George", "Washington", 
-                "a@b.com", "456-789-0123", "456 Broad St. Nowhere, OK 73038");
+                "a@b.com", "456-789-0123", "456 Broad St. Nowhere, OK 73038", myJobHandler);
         
         Calendar cal = Calendar.getInstance();
         int curDate = cal.get(Calendar.DAY_OF_MONTH);
         int curMonth = cal.get(Calendar.MONTH);
         
-        myJob1 = new Job("aJobName1", curMonth + 1, curDate + 1, 1, 3, 3, 3, 
+        myJob1 = new Job("aJobName1", curMonth + 1, curDate + 1, "park 1", 3, 3, 3, 
                 "This job involves repetitive tasks.");
-        myJob2 = new Job("aJobName2", curMonth - 1, curDate + 1, 2, 1, 1, 1, 
+        myJob2 = new Job("aJobName2", curMonth - 1, curDate + 1, "park 2", 1, 1, 1, 
                 "This job involves redundant tasks.");
-        myJob3 = new Job("aJobName3", curMonth, curDate - 1, 3, 1, 1, 1, 
+        myJob3 = new Job("aJobName3", curMonth, curDate - 1, "park 3", 1, 1, 1, 
                 "This job involves repulsive tasks.");
-        myJob4 = new Job("aJobName4", curMonth + 1, curDate + 1, 4, 1, 1, 1, 
+        myJob4 = new Job("aJobName4", curMonth + 1, curDate + 1, "Park 4", 1, 1, 1, 
                 "This job involves reordered tasks.");
-        myJob5 = new Job("aJobName5", curMonth + 1, curDate + 2, 4, 1, 1, 1, 
+        myJob5 = new Job("aJobName5", curMonth + 1, curDate + 2, "Park 4", 1, 1, 1, 
                 "This job involves reconditioned tasks.");
-        myJob6 = new Job("aJobName6", curMonth + 2, curDate + 3, 4, 1, 1, 1, 
+        myJob6 = new Job("aJobName6", curMonth + 2, curDate + 3, "Park 4", 1, 1, 1, 
                 "This job involves recycled tasks.");
         
         myJobHandler.addJob(myJob1);
@@ -87,19 +87,19 @@ public class VolunteerTest {
     @Test
     public void testSignUpForJob() {
         assertTrue("unable to signUpForJob()",
-                myVolunteer1.signUpForJob(myJob1.getJobID(), 1));
+                myVolunteer1.signUpForJob(myJob1, 1));
         assertTrue("unable to sign up 2 people for the same job",
-                myVolunteer2.signUpForJob(myJob1.getJobID(), 2));
+                myVolunteer2.signUpForJob(myJob1, 2));
         assertFalse("was able to sign up for job from last month",
-                myVolunteer1.signUpForJob(myJob2.getJobID(), 1));
+                myVolunteer1.signUpForJob(myJob2, 1));
         assertFalse("was able to sign up for job from last day",
-                myVolunteer1.signUpForJob(myJob3.getJobID(), 1));
+                myVolunteer1.signUpForJob(myJob3, 1));
         assertFalse("was able to sign up for second job on same day",
-                myVolunteer1.signUpForJob(myJob4.getJobID(), 1));
+                myVolunteer1.signUpForJob(myJob4, 1));
         assertTrue("unable to sign up for job",
-                myVolunteer1.signUpForJob(myJob5.getJobID(), 1));
+                myVolunteer1.signUpForJob(myJob5, 1));
         assertFalse("exceeded medium volunteer limit, still able to volunteer",
-                myVolunteer2.signUpForJob(myJob5.getJobID(), 1));
+                myVolunteer2.signUpForJob(myJob5, 1));
         
     }
     
@@ -108,11 +108,11 @@ public class VolunteerTest {
      */
     @Test
     public void testViewJobsSignedUpFor() {
-        myVolunteer1.signUpForJob(myJob6.getJobID(), 1);
+        myVolunteer1.signUpForJob(myJob6, 1);
         assertTrue("viewJobsSignedUpFor() returned unexpected result",
-                myVolunteer1.viewJobsSignedUpFor().contains(myJob1));
+                myVolunteer1.getJobs().contains(myJob1));
         assertFalse("viewJobsSignedUpFor() returned job not signed up for",
-                myVolunteer1.viewJobsSignedUpFor().contains(myJob2));
+                myVolunteer1.getJobs().contains(myJob2));
     }
     		
     
