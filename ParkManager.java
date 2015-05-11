@@ -9,7 +9,8 @@ import java.util.List;
  * @author Dennis Kenyon
  * @version 10May2015
  */
-//adds 'own parks' checker private method
+
+
 public class ParkManager extends AbstractUser {
 	
 	/**List of parks managed by Park Manager. Stored as a String for each park name.*/
@@ -94,4 +95,4 @@ public class ParkManager extends AbstractUser {
 		return false;
 	}
 
-}
+}//end class
