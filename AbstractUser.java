@@ -4,12 +4,10 @@
  * @author Dennis Kenyon
  * @version 09May2015
  */
-//
+
+
 public abstract class AbstractUser {   
-    
-	/** A global counter set up so that each user has a unique integer ID given to him/her. */
-	private static int userIDCounter = 1;
-	
+    	
 	/** The User's first name. */
     private String myFirstName;
     
@@ -44,9 +42,6 @@ public abstract class AbstractUser {
     	myEmail = theEmail;
     	myPhoneNumber = thePhoneNumber;
     	myAddress = theAddress;
-    	myUserID = userIDCounter;
-    	userIDCounter++; //increment global ID counter so that no users created in the future 
-    					 //will have the same ID
     }    
 
     /**
