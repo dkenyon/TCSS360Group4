@@ -13,7 +13,7 @@ public class VolunteerTest {
     
     private Volunteer myVolunteer1, myVolunteer2;
     private Job myJob1, myJob2, myJob3, myJob4, myJob5, myJob6;
-    private static JobHandler myJobHandler;
+    private static JobHandler myJobHandler = new JobHandler();
     
     @Before
     public void setUp() {
