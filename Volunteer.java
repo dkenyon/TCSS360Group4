@@ -8,7 +8,9 @@ import java.util.List;
  * 
  * @author Brian Crabtree
  * @author Dennis Kenyon
+ * @version 10May2015
  */
+
 
 public class Volunteer extends AbstractUser {
     
@@ -24,7 +26,7 @@ public class Volunteer extends AbstractUser {
      * @param theAddress the volunteer's home address
      */
     public Volunteer(String theFirstName, String theLastName, String theEmail, 
-            String thePhoneNumber, String theAddress, JobHandler theJobHandler) {
+        String thePhoneNumber, String theAddress, JobHandler theJobHandler) {
         super(theFirstName, theLastName, theEmail, thePhoneNumber, theAddress);
         myJobHandler = theJobHandler;
         myJobs = new ArrayList<Job>();
@@ -49,13 +51,13 @@ public class Volunteer extends AbstractUser {
         // find out what day / month it is
         Calendar cal = Calendar.getInstance();
         int myCurDate = cal.get(Calendar.DAY_OF_MONTH);
-        int myCurMonth = cal.get(Calendar.MONTH);
+        int myCurMonth = cal.get(Calendar.MONTH) + 1;
         
         Job job = myJobHandler.getJob(theJob);
-        
-        // check for other jobs on this date
-        if (myJobs.stream().noneMatch((aJob)->(aJob.getDay()==job.getDay()))
-                && myCurDate <= job.getDay() && myCurMonth <= job.getMonth()) {
+      
+        if (((myCurMonth*30) + myCurDate) > (job.getMonth()*30) + job.getDay()) {
+        	System.out.println("--ERROR: JOB HAS PASSED ALREADY.");
+        } else if (((myCurMonth*30) + myCurDate) <= (job.getMonth()*30) + job.getDay()) {// check for other jobs on this date
 
             switch(theWorkCategory) {   // sign up for the correct workload
 
@@ -71,9 +73,8 @@ public class Volunteer extends AbstractUser {
                 default: return false; // invalid workload category
             }
             return true;
-        } else {
-            return false;
-        }
+        } 
+        return false;
     }
     
     /**
@@ -84,6 +85,10 @@ public class Volunteer extends AbstractUser {
         return myJobs;
     }
     
+    /**
+     * Adds a job to myJobs list.
+     * @param theJob the job to be added
+     */
     public void addJob(Job theJob) {
     	myJobs.add(theJob);
     }
