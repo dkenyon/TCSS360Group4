@@ -11,7 +11,7 @@ public class JobTest {
 	private String jobName = "Test Job";
 	private int jobMonth = 2;
 	private int jobDate = 8;
-	private int jobLocation = 123;
+	private String jobLocation = "Woodland Park Zoo";
 	private int maxLight = 2;
 	private int maxMed = 3;
 	private int maxHeavy = 4;
