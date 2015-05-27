@@ -32,27 +32,61 @@ public class JobTest {
 	}
 	
 	@Test
-	public void testSignUpForLight() {
+	public void testSignUpForLightWhenEmpty() {
 		assertTrue(newJob1.signUpForLight(volunteer1));
-		assertFalse(newJob1.signUpForLight(volunteer1));
-		assertTrue(newJob1.signUpForLight(volunteer2));
-		assertFalse(newJob1.signUpForLight(volunteer2));
+        }
+        @Test
+        public void testSignUpForLightWithDuplicate() {
+                assertFalse(newJob1.signUpForLight(volunteer1));
+        }
+        @Test
+        public void testSignUpForLightWhenPartial() {
+                assertTrue(newJob1.signUpForLight(volunteer2));
+
+        }
+        @Test
+        public void testSignUpForLightWhenFull() {
+		assertFalse(newJob1.signUpForLight(volunteer3));
 	}
 
 	@Test
-	public void testSignUpForMedium() {
+	public void testSignUpForMediumWhenEmpty() {
 		assertTrue(newJob2.signUpForMedium(volunteer1));
+        }
+        
+        @Test
+        public void testSignUpForMediumWithDuplicate() {
 		assertFalse(newJob2.signUpForMedium(volunteer1));
+        }
+        
+        @Test
+        public void testSignUpForMediumWhenPartial() {
 		assertTrue(newJob2.signUpForMedium(volunteer2));
 		assertTrue(newJob2.signUpForMedium(volunteer3));
-		assertFalse(newJob2.signUpForMedium(volunteer3));
+        }
+        
+        @Test
+        public void testSignUpForMediumWhenFull() {
+		assertFalse(newJob2.signUpForMedium(volunteer4));
 	}
 
 	@Test
-	public void testSignUpForHeavy() {
+	public void testSignUpForHeavyWhenEmpty() {
 		assertTrue(newJob3.signUpForHeavy(volunteer1));
+        }
+        
+        @Test
+        public void testSignUpForHeavyWithDuplicate() {
 		assertFalse(newJob3.signUpForHeavy(volunteer1));
+        }
+        
+        @Test
+        public void testSignUpForHeavyWhenPartial() {
 		assertTrue(newJob3.signUpForHeavy(volunteer2));
+        }
+        
+        @Test
+        public void testSignUpForHeavyWhenFull() {
 		assertTrue(newJob3.signUpForHeavy(volunteer3));
 		assertTrue(newJob3.signUpForHeavy(volunteer4));
 		assertFalse(newJob3.signUpForHeavy(volunteer5));
