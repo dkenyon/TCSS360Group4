@@ -57,7 +57,7 @@ public class Volunteer extends AbstractUser {
       
         if (((myCurMonth*30) + myCurDate) > (job.getMonth()*30) + job.getDay()) {
         	System.out.println("--ERROR: JOB HAS PASSED ALREADY.");
-        } else if (((myCurMonth*30) + myCurDate) <= (job.getMonth()*30) + job.getDay()) {// check for other jobs on this date
+        } else if (((myCurMonth*30) + myCurDate) < (job.getMonth()*30) + job.getDay()) {// check for other jobs on this date
 
             switch(theWorkCategory) {   // sign up for the correct workload
 
