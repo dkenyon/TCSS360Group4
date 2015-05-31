@@ -18,8 +18,14 @@ import java.util.Scanner;
 
 public class ConsoleManagerUI {
 
-	public ConsoleManagerUI(String theEmail, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList) throws FileNotFoundException {
-		managerMenu(theEmail, theManagerList, theJobList);
+	/**
+	 * A shared Scanner resource used for any place there is System.in.
+	 */
+	Scanner myScanner = null;
+	
+	public ConsoleManagerUI(String theEmail, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList, Scanner theScanner) throws FileNotFoundException {
+		myScanner = theScanner;
+		this.managerMenu(theEmail, theManagerList, theJobList);
 	}
 	
 	/**
@@ -29,7 +35,7 @@ public class ConsoleManagerUI {
 	 * @param theJobList a master list of every job that exists
 	 * @throws FileNotFoundException if persistent data files do not exist
 	 */
-	public void managerMenu(String theEmail, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList) throws FileNotFoundException {
+	private void managerMenu(String theEmail, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList) throws FileNotFoundException {
 		ParkManager currentUser = null;
 		for (ParkManager manager : theManagerList) {
 			if (manager.getEmail().equals(theEmail)) {
@@ -39,11 +45,10 @@ public class ConsoleManagerUI {
 		System.out.println();
 		System.out.println("Welcome, ParkManager " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		promptManagerMenu();
-		Scanner scanner = new Scanner(System.in);
-		String userInput = scanner.next();
+		String userInput = myScanner.next();
 		while (!userInput.equals("5")) {
 			if (userInput.equals("1")) {// user selects menu choice 1				
-				managerMenu1(currentUser, theJobList, scanner);
+				managerMenu1(currentUser, theJobList, myScanner);
 			}
 			else if (userInput.equals("2")) {// user selects menu choice 2
 				managerMenu2(currentUser);
@@ -56,11 +61,10 @@ public class ConsoleManagerUI {
 			} else {
 				System.out.println("Not a valid command. Type 1, 2, 3, 4, or 5.");
 			}
-			userInput = scanner.next();
+			userInput = myScanner.next();
 		}
 		System.out.println("Goodbye.");
 		System.out.println("---CONSOLE DEMO OFFLINE---");
-		scanner.close();
 	}
 	
 	/**
