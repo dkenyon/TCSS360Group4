@@ -7,7 +7,6 @@ import org.junit.Test;
 
 public class JobTest {
 
-	private Job newJob1, newJob2, newJob3, newJob4, newJob5;
         private Volunteer volunteer1, volunteer2, volunteer3, 
                 volunteer4, volunteer5;
         private JobHandler myJobHandler = new JobHandler();
@@ -39,13 +38,7 @@ public class JobTest {
                 myJob.signUpForLight(volunteer1);
                 assertFalse(myJob.signUpForLight(volunteer1));
         }
-        @Test
-        public void testSignUpForLightSameDay() {
-                Job myJob1 = new Job("Test Job 1", 1, 14, "Woodland Park Zoo", 5, 5, 5, "This job has lots of info.");
-                Job myJob2 = new Job("Test Job 2", 1, 14, "Point Defiance", 5, 5, 5, "This job has lots of info.");
-                myJob1.signUpForMedium(volunteer1);
-                assertFalse(myJob2.signUpForLight(volunteer1));
-        }
+
         @Test
         public void testSignUpForLightWhenPartial() {
                 Job myJob = new Job("Test Job 1", 1, 16, "Woodland Park Zoo", 5, 5, 5, "This job has lots of info.");
@@ -72,13 +65,7 @@ public class JobTest {
                 myJob.signUpForMedium(volunteer1);
                 assertFalse(myJob.signUpForMedium(volunteer1));
         }
-        @Test
-        public void testSignUpForMediumSameDay() {
-                Job myJob1 = new Job("Test Job 1", 2, 14, "Woodland Park Zoo", 5, 5, 5, "This job has lots of info.");
-                Job myJob2 = new Job("Test Job 2", 2, 14, "Point Defiance", 5, 5, 5, "This job has lots of info.");
-                myJob1.signUpForHeavy(volunteer1);
-                assertFalse(myJob2.signUpForMedium(volunteer1));
-        }
+
         @Test
         public void testSignUpForMediumWhenPartial() {
                 Job myJob = new Job("Test Job 1", 2, 16, "Woodland Park Zoo", 5, 5, 5, "This job has lots of info.");
@@ -111,13 +98,7 @@ public class JobTest {
                 myJob.signUpForHeavy(volunteer1);
                 assertTrue(myJob.signUpForHeavy(volunteer2));
         }
-        @Test
-        public void testSignUpForHeavySameDay() {
-                Job myJob1 = new Job("Test Job 1", 3, 16, "Woodland Park Zoo", 5, 5, 5, "This job has lots of info.");
-                Job myJob2 = new Job("Test Job 2", 3, 16, "Point Defiance", 5, 5, 5, "This job has lots of info.");
-                myJob1.signUpForLight(volunteer1);
-                assertFalse(myJob2.signUpForHeavy(volunteer1));
-        }
+
         @Test
         public void testSignUpForHeavyWhenFull() {
                 Job myJob = new Job("Test Job 1", 3, 18, "Woodland Park Zoo", 1, 1, 1, "This job has lots of info.");
@@ -138,7 +119,7 @@ public class JobTest {
 	@Test
 	public void testGetVolunteers() {
                 Job myJob = new Job("Test Job 1", 5, 14, "Woodland Park Zoo", 3, 3, 3, "This job has lots of info.");
-		List<Volunteer> test = newJob1.getVolunteers();
+		List<Volunteer> test = myJob.getVolunteers();
 		assertEquals(0,test.size());
                 myJob.signUpForLight(volunteer1);
                 myJob.signUpForMedium(volunteer2);
@@ -150,7 +131,7 @@ public class JobTest {
         @Test
 	public void testGetLightVolunteers() {
                 Job myJob = new Job("Test Job 1", 6, 14, "Woodland Park Zoo", 3, 3, 3, "This job has lots of info.");
-		List<Volunteer> test = newJob1.getVolunteers();
+		List<Volunteer> test = myJob.getVolunteers();
 		assertEquals(0,test.size());
                 myJob.signUpForLight(volunteer1);
                 myJob.signUpForLight(volunteer2);
@@ -162,7 +143,7 @@ public class JobTest {
         @Test
 	public void testGetMediumVolunteers() {
                 Job myJob = new Job("Test Job 1", 7, 14, "Woodland Park Zoo", 3, 3, 3, "This job has lots of info.");
-		List<Volunteer> test = newJob1.getVolunteers();
+		List<Volunteer> test = myJob.getVolunteers();
 		assertEquals(0,test.size());
                 myJob.signUpForMedium(volunteer1);
                 myJob.signUpForMedium(volunteer2);
@@ -174,7 +155,7 @@ public class JobTest {
         @Test
 	public void testGetHeavyVolunteers() {
                 Job myJob = new Job("Test Job 1", 8, 14, "Woodland Park Zoo", 3, 3, 3, "This job has lots of info.");
-		List<Volunteer> test = newJob1.getVolunteers();
+		List<Volunteer> test = myJob.getVolunteers();
 		assertEquals(0,test.size());
                 myJob.signUpForHeavy(volunteer1);
                 myJob.signUpForHeavy(volunteer2);
