@@ -5,8 +5,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-
 /**
  * Represents an instance of a volunteer login session.
  * @author Dennis Kenyon
@@ -18,8 +16,14 @@ import java.util.Scanner;
 
 public class ConsoleVolunteerUI {
 	
-	public ConsoleVolunteerUI(String theEmail, ArrayList<Volunteer> theVolunteerList, ArrayList<Job> theJobList) {
-		volunteerMenu(theEmail, theVolunteerList, theJobList);
+	/**
+	 * A shared Scanner resource used for any place there is System.in.
+	 */
+	Scanner myScanner = null;
+	
+	public ConsoleVolunteerUI(String theEmail, ArrayList<Volunteer> theVolunteerList, ArrayList<Job> theJobList, Scanner theScanner) {
+		myScanner = theScanner;
+		this.volunteerMenu(theEmail, theVolunteerList, theJobList);
 	}
 	
 	/**
@@ -28,7 +32,7 @@ public class ConsoleVolunteerUI {
 	 * @param theVolunteerList a complete list of volunteer objects to help instantiate the current user with
 	 * @param theJobList
 	 */
-	public void volunteerMenu(String theEmail, ArrayList<Volunteer> theVolunteerList, ArrayList<Job> theJobList) {
+	private void volunteerMenu(String theEmail, ArrayList<Volunteer> theVolunteerList, ArrayList<Job> theJobList) {
 		Volunteer currentUser = null;
 		for (Volunteer volunteer : theVolunteerList) {
 			if (volunteer.getEmail().equals(theEmail)) {
@@ -38,11 +42,11 @@ public class ConsoleVolunteerUI {
 		System.out.println();
 		System.out.println("Welcome, Volunteer " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		promptVolunteerMenu();
-		Scanner scanner = new Scanner(System.in);
-		String userInput = scanner.next();
+		String userInput = "";
+		userInput = myScanner.next();
 		while (!userInput.equals("5")) {
 			if (userInput.equals("1")) { //menu choice 1
-				volunteerMenu1(currentUser, theJobList, scanner);
+				volunteerMenu1(currentUser, theJobList, myScanner);
 				
 			} else if (userInput.equals("2")) {
 				volunteerMenu2(currentUser);
@@ -53,11 +57,10 @@ public class ConsoleVolunteerUI {
 			} else {
 				System.out.println("Not a valid command. Type 1, 2, 3, 4 or 5.");
 			}
-			userInput = scanner.next();
+			userInput = myScanner.next();
 		}
 		System.out.println("Goodbye.");
 		System.out.println("---CONSOLE DEMO OFFLINE---");
-		scanner.close();
 	}
 	
 	/**
