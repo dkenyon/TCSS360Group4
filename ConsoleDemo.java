@@ -15,10 +15,16 @@ import java.util.Scanner;
 
 public class ConsoleDemo {
 	
+	/**
+	 * A static scanner to be passed to any instantiating class using System.in.
+	 */
+	static Scanner scanner = new Scanner(System.in);
+	
 	//MAIN
 	public static void main(final String[] theArgs) throws FileNotFoundException {
 		
 		// initialize variables
+		
 		JobHandler jobHandler = new JobHandler();
 		ArrayList<Job> jobList = populateJobs(); //read in all jobs
 		ArrayList<Volunteer> volunteerList = populateVolunteers(jobHandler, jobList); //read in all volunteers
@@ -42,33 +48,30 @@ public class ConsoleDemo {
 	 * @throws FileNotFoundException 
 	 */
 	private static void login(ArrayList<Volunteer> theVolunteerList, ArrayList<Administrator> theAdminList, ArrayList<ParkManager> theManagerList, ArrayList<Job> theJobList) throws FileNotFoundException {
-		Scanner consoleScanner = new Scanner(System.in);
+		
 		System.out.println("---LOGIN---");
 		System.out.println("User email: ");
-		String userInput = consoleScanner.next();
+		String userInput = scanner.next();
 		while (!goodLogin(userInput, theVolunteerList, theManagerList, theAdminList)) {
 			System.out.println("Bad login, try again.");
-			userInput = consoleScanner.next();
+			userInput = scanner.next();
 		}
 		for (Volunteer volunteer : theVolunteerList) {
 			if (volunteer.getEmail().equals(userInput)) {
-				ConsoleVolunteerUI volunteerLogin = new ConsoleVolunteerUI(userInput, theVolunteerList, theJobList);
-				volunteerLogin.volunteerMenu(userInput, theVolunteerList, theJobList);
+				ConsoleVolunteerUI volunteerLogin = new ConsoleVolunteerUI(userInput, theVolunteerList, theJobList, scanner);
 			}
 		}
 		for (ParkManager manager : theManagerList) {
 			if (manager.getEmail().equals(userInput)) {
-				ConsoleManagerUI managerLogin = new ConsoleManagerUI(userInput, theManagerList, theJobList);
-				managerLogin.managerMenu(userInput, theManagerList, theJobList);
+				ConsoleManagerUI managerLogin = new ConsoleManagerUI(userInput, theManagerList, theJobList, scanner);
 			}
 		}
 		for (Administrator admin : theAdminList) {
 			if (admin.getEmail().equals(userInput)) {
-				ConsoleAdminUI adminLogin = new ConsoleAdminUI(userInput, theAdminList);
-				adminLogin.adminMenu(userInput, theAdminList);
+				ConsoleAdminUI adminLogin = new ConsoleAdminUI(userInput, theAdminList, scanner);
 			}
 		}
-		consoleScanner.close();
+		scanner.close();
 	}
 
 	
@@ -245,12 +248,11 @@ public class ConsoleDemo {
 				}
 			}
 		}
-		
+
 		scanner.close();
 		scanner2.close();
 		return list;
 	}
-
 
 
 	private static ArrayList<Job> populateJobs() throws FileNotFoundException {
@@ -259,7 +261,7 @@ public class ConsoleDemo {
 		ArrayList<Job> list = new ArrayList<Job>();
 		Scanner scanner = new Scanner(jobsFile);
 		scanner.useDelimiter(",");
-		
+
 		String jobName = null;
 		int jobMonth = 0;
 		int jobDay = 0;
@@ -267,10 +269,10 @@ public class ConsoleDemo {
 		int maxLight = 0;
 		int maxMed = 0;
 		int maxHeavy = 0;
-		String otherInfo ;
-		
+		String otherInfo;
+
 		while (scanner.hasNext() || scanner.hasNextInt()) {
-			
+
 			jobName = scanner.next();
 			jobMonth = scanner.nextInt();
 			jobDay = scanner.nextInt();
