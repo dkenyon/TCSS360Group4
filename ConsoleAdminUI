@@ -11,8 +11,14 @@ import java.util.Scanner;
  */
 public class ConsoleAdminUI {
 
-	public ConsoleAdminUI(String theEmail, ArrayList<Administrator> theAdminList) {
-		adminMenu(theEmail, theAdminList);
+	/**
+	 * A shared Scanner resource used for any place there is System.in.
+	 */
+	Scanner myScanner = null;
+	
+	public ConsoleAdminUI(String theEmail, ArrayList<Administrator> theAdminList, Scanner theScanner) {
+		myScanner = theScanner;
+		this.adminMenu(theEmail, theAdminList);
 	}
 	
 	/**
@@ -20,7 +26,7 @@ public class ConsoleAdminUI {
 	 * @param theEmail the admin's email used to log the admin on
 	 * @param theAdminList a complete list of admin objects to help instantiate the current user with
 	 */
-	public void adminMenu(String theEmail, ArrayList<Administrator> theAdminList) {
+	private void adminMenu(String theEmail, ArrayList<Administrator> theAdminList) {
 		Administrator currentUser = null;
 		for (Administrator admin : theAdminList) {
 			if (admin.getEmail().equals(theEmail)) {
@@ -30,21 +36,20 @@ public class ConsoleAdminUI {
 		System.out.println();
 		System.out.println("Welcome, Administrator " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 		promptAdminMenu();
-		Scanner scanner = new Scanner(System.in);
-		String userInput = scanner.next();
+//		Scanner scanner = new Scanner(System.in);
+		String userInput = myScanner.next();
 		while (!userInput.equals("3")) {
 			if (userInput.equals("1")) { //user selects menu choice 1
-				adminMenu1(currentUser, scanner);
+				adminMenu1(currentUser, myScanner);
 			} else if (userInput.equals("2")) {// user selects menu choice 2
 				adminMenu2(currentUser);
 			} else { //invalid menu choice
 				System.out.println("Not a valid command. Type 1, 2, or 3.");
 			}
-			userInput = scanner.next();
+			userInput = myScanner.next();
 		}
 		System.out.println("Goodbye.");
 		System.out.println("---CONSOLE DEMO OFFLINE---");
-		scanner.close();
 	}
 	
 	/**
