@@ -1,0 +1,94 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**
+ * Represents an instance of an administrator login session.
+ * @author Dennis Kenyon
+ * @author Brian Crabtree
+ * @author David Anderson
+ * @version 31May2015
+ *
+ */
+public class ConsoleAdminUI {
+
+	public ConsoleAdminUI(String theEmail, ArrayList<Administrator> theAdminList) {
+		adminMenu(theEmail, theAdminList);
+	}
+	
+	/**
+	 * The administrator menu choice 'hub.'
+	 * @param theEmail the admin's email used to log the admin on
+	 * @param theAdminList a complete list of admin objects to help instantiate the current user with
+	 */
+	public void adminMenu(String theEmail, ArrayList<Administrator> theAdminList) {
+		Administrator currentUser = null;
+		for (Administrator admin : theAdminList) {
+			if (admin.getEmail().equals(theEmail)) {
+				currentUser = admin;
+			}
+		}
+		System.out.println();
+		System.out.println("Welcome, Administrator " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
+		promptAdminMenu();
+		Scanner scanner = new Scanner(System.in);
+		String userInput = scanner.next();
+		while (!userInput.equals("3")) {
+			if (userInput.equals("1")) { //user selects menu choice 1
+				adminMenu1(currentUser, scanner);
+			} else if (userInput.equals("2")) {// user selects menu choice 2
+				adminMenu2(currentUser);
+			} else { //invalid menu choice
+				System.out.println("Not a valid command. Type 1, 2, or 3.");
+			}
+			userInput = scanner.next();
+		}
+		System.out.println("Goodbye.");
+		System.out.println("---CONSOLE DEMO OFFLINE---");
+		scanner.close();
+	}
+	
+	/**
+	 * This method represents User Story 8: As an Administrator, I want to search volunteers by last name.
+	 * @param currentUser the current admin user
+	 * @param theScanner a passed scanner to take in text in the console
+	 */
+	private void adminMenu1(Administrator currentUser, Scanner theScanner) {
+		String userInput = null;
+		System.out.println("What is the last name of the volunteer you're looking for?");
+		userInput = theScanner.next();
+		ArrayList<Volunteer> list = (ArrayList<Volunteer>) currentUser.searchVolunteers(userInput); //get list of same name volunteers
+		System.out.println("List of volunteers with the last name '" + userInput + "':");
+		for (Volunteer volunteer : list) { //iterate through that list of same name volunteers and print them
+			System.out.println("    " + volunteer);
+		}
+		System.out.println();
+		System.out.println();
+		promptAdminMenu();
+	}
+	
+	/**
+	 * Lists the account details for this admin.
+	 * @param currentUser the current admin user
+	 */
+	private void adminMenu2(Administrator currentUser) {
+		System.out.println("Account details:");
+		System.out.println("	Name: " + currentUser.getFirstName() + " " + currentUser.getLastName());
+		System.out.println("	Email: " + currentUser.getEmail());
+		System.out.println("	Phone number: " + currentUser.getPhoneNumber());
+		System.out.println("	Address: " + currentUser.getAddress());
+		System.out.println("	Access level: Administrator");
+		System.out.println();
+		System.out.println();
+		promptAdminMenu();
+	}
+	
+	/**
+	 * Prints out the admin menu prompt.
+	 */
+	private void promptAdminMenu() {
+		System.out.println("---ADMINISTRATOR OPTIONS---");
+		System.out.println("    1) Search volunteers by last name");
+		System.out.println("    2) View my account information");
+		System.out.println("    3) Logout");
+	}
+}
