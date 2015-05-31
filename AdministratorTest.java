@@ -32,7 +32,7 @@ public class AdministratorTest {
      * Test method for {@link Administrator#searchVolunteers(Administrator)}.
      */
     @Test
-    public void testSearchVolunteers() {
+    public void testSearchVolunteersExistsNonempty() {
     	ArrayList<Volunteer> list = new ArrayList<Volunteer>();
     	list.add(new Volunteer("John", "Smith", "johnsmith@gmail.com", "2534445555", "123 Fake Street", myJobHandler));
     	list.add(new Volunteer("Jacob", "Smith", "jacobsmith@gmail.com", "3604448796", "456 Fake Street", myJobHandler));
@@ -43,8 +43,25 @@ public class AdministratorTest {
     	ArrayList<Volunteer> list3 = (ArrayList<Volunteer>) myAdmin.searchVolunteers("Smith");
     	System.out.println(list);
     	System.out.println(list2);
-        assertEquals("testSearchVolunteers failed!", list2, list3);
+        assertEquals("testSearchVolunteersExistsNonempty failed!", list2, list3);
     }
-
+    
+    @Test
+    public void testSearchVolunteersWhenEmpty(){
+    	ArrayList<Volunteer> list1 = (ArrayList<Volunteer>) myAdmin.searchVolunteers("Test");
+    	assertEquals("testSearchVolunteersWhenEmopty failed!", list1.size(),0);
+    }
+    
+    @Test
+    public void testSearchVolunteersDoesNotExist(){
+    	ArrayList<Volunteer> list = new ArrayList<Volunteer>();
+    	list.add(new Volunteer("John", "Smith", "johnsmith@gmail.com", "2534445555", "123 Fake Street", myJobHandler));
+    	list.add(new Volunteer("Jacob", "Smith", "jacobsmith@gmail.com", "3604448796", "456 Fake Street", myJobHandler));
+    	list.add(new Volunteer("Mary", "Shelly", "maryshelly@gmail.com", "2538791150", "789 Fake Street", myJobHandler));
+    	myJobHandler.populateVolunteers(list);
+    	
+    	ArrayList<Volunteer> list1 = (ArrayList<Volunteer>) myAdmin.searchVolunteers("Shemp");
+    	assertEquals("testSearchVolunteersDoesNotExist",list1.size(),0);
+    }
 
 }
