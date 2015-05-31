@@ -21,6 +21,8 @@ public class ConsoleVolunteerUI {
 	 */
 	Scanner myScanner = null;
 	
+	String myExistingJobName = null;
+	
 	public ConsoleVolunteerUI(String theEmail, ArrayList<Volunteer> theVolunteerList, ArrayList<Job> theJobList, Scanner theScanner) {
 		myScanner = theScanner;
 		this.volunteerMenu(theEmail, theVolunteerList, theJobList);
@@ -47,7 +49,6 @@ public class ConsoleVolunteerUI {
 		while (!userInput.equals("5")) {
 			if (userInput.equals("1")) { //menu choice 1
 				volunteerMenu1(currentUser, theJobList, myScanner);
-				
 			} else if (userInput.equals("2")) {
 				volunteerMenu2(currentUser);
 			} else if (userInput.equals("3")) {
@@ -70,37 +71,15 @@ public class ConsoleVolunteerUI {
 	 * @param scanner a passed scanner to take in text in the console
 	 */
 	private void volunteerMenu1(Volunteer currentUser, ArrayList<Job> theJobList, Scanner scanner) {
-		int potentialJobDay = 0;
-		int potentialJobMonth = 0;
-		//String jobName= null;
-		//String workLoad = null;
 		System.out.println("What is the name of the job you want to sign up for?");
 		scanner.nextLine();
 		String jobName = scanner.nextLine();
-		
-		//check to see that business rule 7 is not violated
-		for (Job job : theJobList) {
-			if (job.getName().equalsIgnoreCase(jobName)) {
-				potentialJobDay = job.getDay();
-				potentialJobMonth = job.getMonth();
-			}
-		}
-		int existingJobDay = 0;
-		int existingJobMonth = 0;
-		String existingJobName = null;
-		for (Job job : currentUser.getJobs()) {
-			if (job.getDay() == potentialJobDay && job.getMonth() == potentialJobMonth) {
-				existingJobDay = potentialJobDay;
-				existingJobMonth = potentialJobMonth;
-				existingJobName = job.getName();
-			}
-		}
-		if (existingJobDay == potentialJobDay && existingJobMonth == potentialJobMonth) {
-			System.out.println("--ERROR: Because " + jobName + " has the same date as " + existingJobName + ", you aren't able to sign up for it.");
+		//checks to see if business rule 7 is violated in this if statement
+		if (businessRuleSevenCheck(theJobList, currentUser, scanner, jobName)) {
+			System.out.println("--ERROR: Because " + jobName + " has the same date as " + myExistingJobName + ", you aren't able to sign up for it.");
 			System.out.println();
 			System.out.println();
 			promptVolunteerMenu();
-			//end business rule 7 check
 		} else {
 			for (Job job : theJobList) {
 				if (job.getName().equals(jobName)) {
@@ -108,7 +87,6 @@ public class ConsoleVolunteerUI {
 					System.out.println("Job Description: ");
 					System.out.println("	" + job.getInfo());
 					System.out.println();
-					
 					System.out.println("Current workload demands for this job (# of slots filled / # of maximum for that category): ");
 					System.out.println("	Light: " + job.getLightVolunteers().size() + "/" + job.getMaxLight()); 
 					System.out.println("	Medium: " + job.getMediumVolunteers().size() + "/" + job.getMaxMed());
@@ -128,29 +106,10 @@ public class ConsoleVolunteerUI {
 			} else {
 				System.out.println("Enter either heavy, medium, or light for the workload you can contribute.");
 			}
-			// check for business rule 3
-			Job thisJob = null;
-			for (Job job : theJobList) {
-				if (job.getName().equals(jobName)) {
-					thisJob = job;
-				}
-			}
-			if (workLoad.equalsIgnoreCase("heavy") && (thisJob.getHeavyVolunteers().size() / thisJob.getMaxHeavy()) == 1) {
-				System.out.println("--ERROR: Heavy volunteer slots are already filled!");
-				System.out.println();
-				System.out.println();
+			
+			//check if business rule 3 fails
+			if (!businessRuleThreeCheck(theJobList, jobName, workLoad)) {
 				promptVolunteerMenu();
-			} else if (workLoad.equals("medium") && (thisJob.getMediumVolunteers().size() / thisJob.getMaxMed()) == 1) {
-				System.out.println("--ERROR: Medium volunteer slots are already filled!");
-				System.out.println();
-				System.out.println();
-				promptVolunteerMenu();
-			} else if (workLoad.equals("light") && (thisJob.getLightVolunteers().size() / thisJob.getMaxLight()) == 1) {
-				System.out.println("--ERROR: Light volunteer slots are already filled!");
-				System.out.println();
-				System.out.println();
-				promptVolunteerMenu();
-				//end check for business rule 3
 			} else {
 				for (Job job : currentUser.viewJobsCanSignUpFor()) {
 					if (jobName.equals(job.getName())) {
@@ -243,5 +202,72 @@ public class ConsoleVolunteerUI {
 		System.out.println("    3) View jobs currently signed up for");
 		System.out.println("    4) View my account information");
 		System.out.println("    5) Logout");
+	}
+	
+	/**
+	 * Checks to see if business rule 3 is violated.
+	 * Business rule 3 is: A Volunteer may not sign up for a work category on a job if the maximum number of Volunteers
+	 * for that work category has already been reached.
+	 * @param theJobList master list of jobs
+	 * @param currentUser the current user identity
+	 * @param scanner the global Scanner object
+	 * @param jobName the name of the job
+	 * @return true if business rule 3 is satisfied, false if violated
+	 */
+	private boolean businessRuleThreeCheck( ArrayList<Job> theJobList, String jobName, String workLoad) {
+		Job thisJob = null;
+		for (Job job : theJobList) {
+			if (job.getName().equals(jobName)) {
+				thisJob = job;
+			}
+		}
+		if (workLoad.equalsIgnoreCase("heavy") && (thisJob.getHeavyVolunteers().size() / thisJob.getMaxHeavy()) == 1) {
+			System.out.println("--ERROR: Heavy volunteer slots are already filled!");
+			System.out.println();
+			System.out.println();
+			return false;
+		} else if (workLoad.equals("medium") && (thisJob.getMediumVolunteers().size() / thisJob.getMaxMed()) == 1) {
+			System.out.println("--ERROR: Medium volunteer slots are already filled!");
+			System.out.println();
+			System.out.println();
+			return false;
+		} else if (workLoad.equals("light") && (thisJob.getLightVolunteers().size() / thisJob.getMaxLight()) == 1) {
+			System.out.println("--ERROR: Light volunteer slots are already filled!");
+			System.out.println();
+			System.out.println();
+			return false;
+		}
+		return true;
+	}
+		
+	/**
+	 * Checks to see if business rule 7 is violated.
+	 * Business rule 7 is: A volunteer may not sign up for two jobs on the same day.
+	 * @param theJobList master list of jobs
+	 * @param currentUser the current user identity
+	 * @param scanner the global Scanner object
+	 * @param jobName the name of the job
+	 * @return true is business rule is violated, false otherwise.
+	 */
+	private boolean businessRuleSevenCheck(ArrayList<Job> theJobList, Volunteer currentUser, Scanner scanner, String jobName) {
+		int potentialJobDay = 0;
+		int potentialJobMonth = 0;
+		
+		for (Job job : theJobList) {
+			if (job.getName().equalsIgnoreCase(jobName)) {
+				potentialJobDay = job.getDay();
+				potentialJobMonth = job.getMonth();
+			}
+		}
+		int existingJobDay = 0;
+		int existingJobMonth = 0;
+		for (Job job : currentUser.getJobs()) {
+			if (job.getDay() == potentialJobDay && job.getMonth() == potentialJobMonth) {
+				existingJobDay = potentialJobDay;
+				existingJobMonth = potentialJobMonth;
+				myExistingJobName = job.getName();
+			}
+		}
+		return (existingJobDay == potentialJobDay && existingJobMonth == potentialJobMonth);
 	}
 }
