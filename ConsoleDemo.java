@@ -1,6 +1,6 @@
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -110,7 +110,7 @@ public class ConsoleDemo {
 	//populates list of administrators at startup
 	private static ArrayList<Administrator> populateAdmins(final JobHandler theJobHandler) throws FileNotFoundException {
 		//File adminsFile = new File("src/admins.txt");
-		InputStream adminsFile = ConsoleDemo.class.getResourceAsStream("/admins.txt");
+		File adminsFile = new File("src/admins.txt");
 		ArrayList<Administrator> list = new ArrayList<Administrator>();
 		Scanner scanner = new Scanner(adminsFile);
 		scanner.useDelimiter(",");
@@ -138,7 +138,7 @@ public class ConsoleDemo {
 	//populates list of park managers at startup
 	private static ArrayList<ParkManager> populateManagers(final JobHandler theJobHandler, ArrayList<Job> theJobList) throws FileNotFoundException {
 //		File managersFile = new File("src/parkmanagers.txt");
-		InputStream managersFile = ConsoleDemo.class.getResourceAsStream("/parkmanagers.txt");
+		File managersFile = new File("src/parkmanagers.txt");
 		ArrayList<ParkManager> list = new ArrayList<ParkManager>();
 		Scanner scanner = new Scanner(managersFile);
 		scanner.useDelimiter(",");
@@ -162,7 +162,7 @@ public class ConsoleDemo {
 		
 		//fill in each manager's park listing
 		//File parksForManagers = new File("src/managersparks.txt");
-		InputStream parksForManagers = ConsoleDemo.class.getResourceAsStream("/managersparks.txt");
+		File parksForManagers = new File("src/managersparks.txt");
 		Scanner scanner2 = new Scanner(parksForManagers);
 		scanner2.useDelimiter(",");
 		String email2;
@@ -197,8 +197,7 @@ public class ConsoleDemo {
 
 	//populates list of volunteers at startup
 	private static ArrayList<Volunteer> populateVolunteers(JobHandler theJobHandler, ArrayList<Job> theJobList) throws FileNotFoundException {
-//		File volunteersFile = new File("src/volunteers.txt");
-		InputStream volunteersFile = ConsoleDemo.class.getResourceAsStream("/volunteers.txt");
+		File volunteersFile = new File("src/volunteers.txt");
 		ArrayList<Volunteer> list = new ArrayList<Volunteer>();
 		Scanner scanner = new Scanner(volunteersFile);
 		scanner.useDelimiter(",");
@@ -222,8 +221,7 @@ public class ConsoleDemo {
 		}
 		
 		//fill in volunteers' jobs
-//		File volunteerJobsFile = new File("src/volunteersAndJobs.txt");
-		InputStream volunteerJobsFile = ConsoleDemo.class.getResourceAsStream("/volunteersAndJobs.txt");
+		File volunteerJobsFile = new File("src/volunteersAndJobs.txt");
 		Scanner scanner2 = new Scanner(volunteerJobsFile);
 		scanner2.useDelimiter(",");
 		while (scanner2.hasNext()) {
@@ -257,7 +255,7 @@ public class ConsoleDemo {
 
 	private static ArrayList<Job> populateJobs() throws FileNotFoundException {
 		//File jobsFile = new File("src");
-		InputStream jobsFile = ConsoleDemo.class.getResourceAsStream("/jobs.txt");
+		File jobsFile = new File("src/jobs.txt");
 		ArrayList<Job> list = new ArrayList<Job>();
 		Scanner scanner = new Scanner(jobsFile);
 		scanner.useDelimiter(",");
