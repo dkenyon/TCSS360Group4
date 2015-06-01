@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -80,6 +81,11 @@ public class ConsoleVolunteerUI {
 			System.out.println();
 			System.out.println();
 			promptVolunteerMenu();
+		} else if (businessRuleSixCheck(theJobList, currentUser, jobName)) {
+			System.out.println("--ERROR: Can't sign up for a job that has already passed. ");
+			System.out.println();
+			System.out.println();
+			promptVolunteerMenu();
 		} else {
 			for (Job job : theJobList) {
 				if (job.getName().equals(jobName)) {
@@ -121,6 +127,7 @@ public class ConsoleVolunteerUI {
 							          BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
 							          PrintWriter out = new PrintWriter(bufferWriter)){
 							     out.print(currentUser.getEmail() + "," + job.getName() + "," + workLoad + ",");
+							     out.close();
 							  }  
 							  catch( IOException e ){
 								  System.out.println("failed to write");
@@ -235,6 +242,30 @@ public class ConsoleVolunteerUI {
 			System.out.println("--ERROR: Light volunteer slots are already filled!");
 			System.out.println();
 			System.out.println();
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks to see if business rule 6 is violated.
+	 * Business rule 6 is: A Volunteer may not sign up for a job that has passed.
+	 * @return false if business rule 6 violated, true otherwise
+	 */
+	private boolean businessRuleSixCheck(ArrayList<Job> theJobList, Volunteer currentUser, String jobName) {
+		Calendar cal = Calendar.getInstance();
+	    int currentDay = cal.get(Calendar.DAY_OF_MONTH);
+	    int currentMonth = cal.get(Calendar.MONTH) + 1;
+		int potentialJobDay = 0;
+		int potentialJobMonth = 0;
+		
+		for (Job job : theJobList) {
+			if (job.getName().equalsIgnoreCase(jobName)) {
+				potentialJobDay = job.getDay();
+				potentialJobMonth = job.getMonth();
+			}
+		}
+		if (currentDay + currentMonth * 30 < potentialJobDay + potentialJobMonth * 30) {
 			return false;
 		}
 		return true;
