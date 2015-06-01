@@ -78,7 +78,8 @@ public class ConsoleManagerUI {
 		Calendar cal = Calendar.getInstance();
 	    int currentDay = cal.get(Calendar.DAY_OF_MONTH);
 	    int currentMonth = cal.get(Calendar.MONTH) + 1;
-	    int currentDayCount = (currentMonth * 30) + currentDay;
+	    int currentYear = 2015;
+	    int currentDayCount = (currentMonth * 30) + currentDay + (currentYear * 365);
 	         
 		//check to see if 30 total jobs exist business rule 1
 		if (businessRuleOneCheck(theJobList)) {
@@ -87,6 +88,7 @@ public class ConsoleManagerUI {
 			String jobName = null;
 			int jobMonth = 0;
 			int jobDay = 0;
+			int jobYear = 0;
 			String jobLocation = null;
 			int maxLight = 0;
 			int maxMed = 0;
@@ -100,8 +102,10 @@ public class ConsoleManagerUI {
 			jobDay = scanner.nextInt();
 			System.out.print("Job month (mm): ");
 			jobMonth = scanner.nextInt();
+			System.out.print("Job year (yyyy): ");
+			jobYear = scanner.nextInt();
 			
-			if (!businessRuleFiveCheck(currentDayCount, jobMonth, jobDay)) { //IF BUSINESS RULE 5 VIOLATION
+			if (!businessRuleFiveCheck(currentDayCount, jobYear, jobMonth, jobDay)) { //IF BUSINESS RULE 5 VIOLATION
 				promptManagerMenu();
 			} else if (!businessRuleTwoCheck(theJobList, jobMonth, jobDay, currentMonth, currentDay)) { //IF BUSINESS RULE 2 VIOLATION
 				promptManagerMenu();
@@ -257,8 +261,9 @@ public class ConsoleManagerUI {
 	 * @return false if this business rule is violated, true otherwise
 	 */
 	private boolean businessRuleTwoCheck(ArrayList<Job> theJobList, int jobMonth, int jobDay, int currentMonth, int currentDay) {
-		int leftBound7Day = (jobMonth * 30 + jobDay) - 3; // used for enforcing business rule 2
-	    int rightBound7Day = (jobMonth * 30 + jobDay) + 3; // used for enforcing business rule 2
+		
+		int leftBound7Day = ((jobMonth * 30) + jobDay ) - 3; // used for enforcing business rule 2
+	    int rightBound7Day = ((jobMonth * 30) + jobDay ) + 3; // used for enforcing business rule 2
 		int businessRule2Counter = 0; //used for business rule 2; if over 5, can't add this job
 	    for (Job job : theJobList) { //used to tally businessRule2Counter
 	    	int thisJobsDayCount = job.getMonth() * 30 + job.getDay();
@@ -266,7 +271,7 @@ public class ConsoleManagerUI {
 	    		businessRule2Counter++;
 	    	}
 	    }
-	    if ((jobMonth * 30) + jobDay - (currentMonth * 30) + currentDay > 90) {
+	    if (((jobMonth * 30) + jobDay) - ((currentMonth * 30) + currentDay) > 90) {
 			System.out.println("--ERROR: Job is too far from today's date. Jobs must be no more than three months in the future.");
 			System.out.println();
 			System.out.println();
@@ -284,8 +289,8 @@ public class ConsoleManagerUI {
 	 * Business rule 5: A job may not be added that is in the past or more than three months in the future.
 	 * @return false if violated, true otherwise
 	 */
-	private boolean businessRuleFiveCheck(int currentDayCount, int jobMonth, int jobDay) {
-		if (currentDayCount > ((jobMonth * 30) + jobDay)) {
+	private boolean businessRuleFiveCheck(int currentDayCount, int jobYear, int jobMonth, int jobDay) {
+		if (currentDayCount > ((jobMonth * 30) + jobDay + (jobYear * 365))) {
 			System.out.println("--ERROR: You can't add a job that is supposed to happen in the past.");
 			System.out.println();
 			System.out.println();
