@@ -80,10 +80,8 @@ public class ConsoleManagerUI {
 	    int currentMonth = cal.get(Calendar.MONTH) + 1;
 	    int currentDayCount = (currentMonth * 30) + currentDay;
 	         
-		//check to see if 30 total jobs exist
-		if (theJobList.size() == 30) {
-			System.out.println("--ERROR: Too many pending jobs (30) in the system exist. Try again later.");
-			System.out.println();
+		//check to see if 30 total jobs exist business rule 1
+		if (businessRuleOneCheck(theJobList)) {
 			promptManagerMenu();
 		} else {
 			String jobName = null;
@@ -102,41 +100,17 @@ public class ConsoleManagerUI {
 			jobDay = scanner.nextInt();
 			System.out.print("Job month (mm): ");
 			jobMonth = scanner.nextInt();
-			int leftBound7Day = (jobMonth * 30 + jobDay) - 3; // used for enforcing business rule 2
-		    int rightBound7Day = (jobMonth * 30 + jobDay) + 3; // used for enforcing business rule 2
-			int businessRule2Counter = 0; //used for business rule 2; if over 5, can't add this job
-		    for (Job job : theJobList) { //used to tally businessRule2Counter
-		    	int thisJobsDayCount = job.getMonth() * 30 + job.getDay();
-		    	if (thisJobsDayCount <= rightBound7Day && thisJobsDayCount >= leftBound7Day) {
-		    		businessRule2Counter++;
-		    	}
-		    }
-			//check  for business rule 5
-			if (currentDayCount > ((jobMonth * 30) + jobDay)) {
-				System.out.println("--ERROR: You can't add a job that is supposed to happen in the past.");
-				System.out.println();
-				System.out.println();
+			
+			if (!businessRuleFiveCheck(currentDayCount, jobMonth, jobDay)) { //IF BUSINESS RULE 5 VIOLATION
 				promptManagerMenu();
-			} else if ((jobMonth * 30) + jobDay - (currentMonth * 30) + currentDay > 90) {
-				System.out.println("--ERROR: Job is too far from today's date. Jobs must be no more than three months in the future.");
-				System.out.println();
-				System.out.println();
+			} else if (!businessRuleTwoCheck(theJobList, jobMonth, jobDay, currentMonth, currentDay)) { //IF BUSINESS RULE 2 VIOLATION
 				promptManagerMenu();
-			} else if (businessRule2Counter > 4) { //check for business rule 2
-				System.out.println("--ERROR: There are already five jobs scheduled in this seven day period, so this job can't be added.");
-				System.out.println();
-				System.out.println();
-				promptManagerMenu();
-				//end business rule 2 check
 			}
 			else {
 				System.out.print("Park name: ");
 				scanner.nextLine();
 				jobLocation = scanner.nextLine();
-				if (!currentUser.ownsPark(jobLocation)) {
-					System.out.println("--ERROR: You don't own this park and therefore can't create a job for it.");
-					System.out.println();
-					System.out.println();
+				if (!businessRuleEightCheck(currentUser, jobLocation)) { //IF BUSINESS RULE 8 VIOLATION
 					promptManagerMenu();
 				} else {
 					System.out.print("Max number of light-load volunteers: ");
@@ -182,11 +156,11 @@ public class ConsoleManagerUI {
 						System.out.println("Type 'Y' for yes or 'N' for no.");
 					}
 				}
-
+	
 			}
 		}
 	}
-	
+
 	/**
 	 * This method represents User Story 5: As a Park Manager, I want to view upcoming jobs in the parks that I manage.
 	 * @param currentUser the current park manager user
@@ -253,5 +227,89 @@ public class ConsoleManagerUI {
 		System.out.println("    3) View the volunteers for a for a job in the parks I manage");
 		System.out.println("    4) View my account information");
 		System.out.println("    5) Logout");
+	}
+	
+	/**
+	 * Checks to see if business rule 1 is violated.
+	 * Business rule 1 is: A job may not be added if the total number of pending jobs is currently 30.
+	 * @param theJobList the master job list
+	 * @return true if it is violated, false otherwise
+	 */
+	private boolean businessRuleOneCheck(ArrayList<Job> theJobList) {
+		if (theJobList.size() >= 30) {
+			System.out.println("--ERROR: Too many pending jobs (30) in the system exist. Try again later.");
+			System.out.println();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks to see if business rule 2 is violated.
+	 * Business rule 2: A job may not be added if the total number of pending jobs during that week (3 days on either side of the job days)
+	 * is currently 5. In other words, during any consecutive 7 day period there can be no more than 5 jobs.
+	 * @theJobList the master job list
+	 * @jobMonth the month
+	 * @jobDay the day
+	 * @currentMonth the current month from today's date
+	 * @currentDay the current day from today's date
+	 * @return false if this business rule is violated, true otherwise
+	 */
+	private boolean businessRuleTwoCheck(ArrayList<Job> theJobList, int jobMonth, int jobDay, int currentMonth, int currentDay) {
+		int leftBound7Day = (jobMonth * 30 + jobDay) - 3; // used for enforcing business rule 2
+	    int rightBound7Day = (jobMonth * 30 + jobDay) + 3; // used for enforcing business rule 2
+		int businessRule2Counter = 0; //used for business rule 2; if over 5, can't add this job
+	    for (Job job : theJobList) { //used to tally businessRule2Counter
+	    	int thisJobsDayCount = job.getMonth() * 30 + job.getDay();
+	    	if (thisJobsDayCount <= rightBound7Day && thisJobsDayCount >= leftBound7Day) {
+	    		businessRule2Counter++;
+	    	}
+	    }
+	    if ((jobMonth * 30) + jobDay - (currentMonth * 30) + currentDay > 90) {
+			System.out.println("--ERROR: Job is too far from today's date. Jobs must be no more than three months in the future.");
+			System.out.println();
+			System.out.println();
+			return false;
+		} else if (businessRule2Counter > 4) { //check for business rule 2
+			System.out.println("--ERROR: There are already five jobs scheduled in this seven day period, so this job can't be added.");
+			System.out.println();
+			System.out.println();
+			return false;
+		}
+	    return true;
+	}
+	/**
+	 * Checks to see if business rule 5 is violated.
+	 * Business rule 5: A job may not be added that is in the past or more than three months in the future.
+	 * @return false if violated, true otherwise
+	 */
+	private boolean businessRuleFiveCheck(int currentDayCount, int jobMonth, int jobDay) {
+		if (currentDayCount > ((jobMonth * 30) + jobDay)) {
+			System.out.println("--ERROR: You can't add a job that is supposed to happen in the past.");
+			System.out.println();
+			System.out.println();
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Checks to see if business rule 8 is violated.
+	 * Business rule 8: A Park Manager can create jobs only for those parks that he/she manages.
+	 * @param currentUser the current park manager user session
+	 * @param jobLocation the park location's name
+	 * @return false if a park manager does not own this jobLocation, true otherwise
+	 */
+	private boolean businessRuleEightCheck(ParkManager currentUser, String jobLocation) {
+		if (!currentUser.ownsPark(jobLocation)) {
+			System.out.println("--ERROR: You don't own this park and therefore can't create a job for it.");
+			System.out.println();
+			System.out.println();
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
